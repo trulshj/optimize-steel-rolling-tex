@@ -1,10 +1,8 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 
-\usepackage{newpxtext}
-\usepackage{newpxmath}
+\include{setup/packages}
 
-\DeclareMathOperator*{\minimize}{minimize}
 
 \title{TMA4183 Steel Optimization}
 \author{}
@@ -28,16 +26,18 @@ The problem is defined by
 Where $u = u(t) \colon \mathbb{R} \to \mathbb{R}$ is the scalar-valued, time dependent control. The goal is to determine a optimal $u$ such that $\theta(x, t_f)$ is "as close as possible" to some desired $\theta_d$, on the condition that $u \in U_{\mathrm{ad}}$. More formally, we wish to solve
 \begin{subequations}
 \begin{equation}
-   \minimize \frac{\alpha}{2} \iint_Q (\theta - \theta_d)^2 \mathop{dx} \mathop{dt} + \frac{\beta}{2} \int_0^{t_f} u^2 \mathop{dt}
+   \min \frac{\alpha}{2} \iint_Q (\theta - \theta_d)^2 \mathop{dx} \mathop{dt} + \frac{\beta}{2} \int_0^{t_f} u^2 \mathop{dt}
 \end{equation}
 subject to
 \begin{equation}
-      \theta \colon \Omega \times [0, t_f] \to \mathbb{R} \text{ solves \eqref{eq:heat}},
+      \theta \colon \Omega \times [0, T] \to \mathbb{R} \text{ solves \eqref{eq:heat}},
 \end{equation}
 and
 \begin{equation}
    u \in U_{\mathrm{ad}}.
 \end{equation}
 \end{subequations}
-We have defined $Q \coloneqq \Omega \times [0, t_f]$.
+We have defined $Q \colon= \Omega \times (0, T)$.
+
+
 \end{document}
