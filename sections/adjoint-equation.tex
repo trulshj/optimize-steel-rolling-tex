@@ -1,5 +1,5 @@
 
-\subsection{Weak formulation and the adjoint eqution}
+\subsection{The adjoint eqution and the gradient}
 
 We start by finding the weak formulation for the problem defined in \eqref{eq:heat}. We multiply the equation \eqref{eq:heat-in-omega} by a test function $\psi\in H^1(\Omega)$, and integrate over the domain $Q$. Then partial integration gives
 \begin{equation}
@@ -9,20 +9,16 @@ We start by finding the weak formulation for the problem defined in \eqref{eq:he
 \end{aligned}
 \end{equation}
 Now after inserting for the boundary conditions defined in \eqref{eq:heat}, we end up with the following weak formulation of the state equation
-\begin{equation}
-  \begin{aligned}\label{eq:weak-form}
-  \iint_Q \theta_t\psi\dxdt + \frac{k}{\rho c_p}\iint_Q\nabla\theta\nabla\psi &\dxdt + \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)\theta\psi\dsdt \\
-  &= \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)\theta_w\psi\dsdt,
-  \end{aligned}
+\begin{equation}\label{eq:weak-form}
+  \iint_Q \theta_t\psi\dxdt + \frac{k}{\rho c_p}\iint_Q\nabla\theta\nabla\psi\dxdt + \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)(\theta - \theta_w)\psi\dsdt = 0
 \end{equation}
 where $\Sigma_i = \Gamma_i\times(0,T)$.
 
 From the weak formulation of the problem, we can easily set up the Lagrangian function, by subtracting the weak formulation of the problem \eqref{eq:weak-form} from the cost functional \eqref{eq:cost-func}. The test function is replaced with a Lagrange multiplier function $p$. This gives
 \begin{equation}
   \begin{aligned}\label{eq:lagrangian-raw}
-  \mathcal{L}(\theta, u, p) = &\,J(\theta, u) - \iint_Q \theta_t p\dxdt - \frac{k}{\rho c_p}\iint_Q\nabla\theta\nabla p \dxdt \\
-  &- \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)\theta p\dsdt
-  + \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)\theta_w p\dsdt.
+  \L(\theta, u, p) = &\,J(\theta, u) - \iint_Q \theta_t p\dxdt - \frac{k}{\rho c_p}\iint_Q\nabla\theta\nabla p \dxdt \\
+  &- \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)(\theta - \theta_w)p \dsdt
   \end{aligned}
 \end{equation}
 
@@ -31,7 +27,7 @@ Now we derive the adjoint equation. This is done by  setting the directional der
 This gives
 \begin{equation}
   \begin{aligned}
-  0 = \mathcal{L}_\theta(\theta, u, p)h = \int_\Omega (\theta(x,T) - \theta_d)h(x, T)\dx - \iint_Q h_t p\dxdt \\
+  0 = \L_\theta(\theta, u, p)h = \int_\Omega (\theta(x,T) - \theta_d)h(x, T)\dx - \iint_Q h_t p\dxdt \\
   - \frac{k}{\rho c_p}\iint_Q\nabla h\nabla p \dxdt
   - \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)h p\dsdt
   \end{aligned}
@@ -39,7 +35,7 @@ This gives
 Partial integration then gives
 \begin{equation} % Skip this calculation?
   \begin{aligned}
-  0 = \mathcal{L}_\theta(\theta, u, p)h = \int_\Omega \theta(x,T) - \theta_d)h(x, T)\dx - \int_\Omega hp\Big|_0^T \dx \\
+  0 = \L_\theta(\theta, u, p)h = \int_\Omega \theta(x,T) - \theta_d)h(x, T)\dx - \int_\Omega hp\Big|_0^T \dx \\
   + \iint_Q h p_t\dxdt
   + \frac{k}{\rho c_p}\iint_Q h\Delta p \dxdt \\
   - \frac{k}{\rho c_p} \iint_{\partial Q}\partial_\nu p\cdot h\dsdt
@@ -49,7 +45,7 @@ Partial integration then gives
 Now after som reordering of the terms we get
 \begin{equation}
   \begin{aligned}
-  0 = \mathcal{L}_\theta(\theta, u, p)h = \int_\Omega \theta(x,T) - \theta_d-p(x, T))h(x, T)\dx \\
+  0 = \L_\theta(\theta, u, p)h = \int_\Omega \theta(x,T) - \theta_d-p(x, T))h(x, T)\dx \\
   + \iint_Q h \left( p_t + \frac{k}{\rho c_p}\Delta p\right) \dxdt
    - \frac{k}{\rho c_p} \iint_{\Sigma_2}\partial_\nu p\cdot h\dsdt \\
    + \frac{1}{\rho c_p} \iint_{\Sigma_1}h(  -k\partial_\nu p - u(t)p )\dsdt.
@@ -81,3 +77,12 @@ This constitues the \textit{adjoint equation}, which we restate below
       p(x, T) &= \theta(x, T) - \theta_d.
    \end{align}
 \end{subequations}
+
+\subsubsection{Gradient}
+To derive the gradient of our problem \eqref{eq:cost-func}, we differentiate the Lagrangian \eqref{eq:lagrangian-raw} again, but now with respect to the control $u$. We still differentiate in direction $h$, but now note that $h\in H^1(0, T)$. This gives
+\begin{equation}
+\begin{aligned} % Fikk hjelp av Dietmar for denne, så den skal være good.
+  \L_u(\theta, u, p) h &= \gamma\int_0^T uh \dt - \frac{1}{\rho c_p} \iint\limits_{0\,\,\Gamma_1}^{\,\,\,T}(\theta - \theta_w)p \dsdt \\
+  &= \int_0^T h \left( \gamma u - \frac{1}{\rho c_p} \int_{\Gamma_1}(\theta - \theta_w)p \mathop{ds} \right) \dt.
+\end{aligned}
+\end{equation}

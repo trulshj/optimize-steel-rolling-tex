@@ -26,7 +26,7 @@ The problem is defined by
 Where $u = u(t) \colon \mathbb{R} \to \mathbb{R}$ is the scalar-valued, time dependent control. The goal is to determine a optimal $u$ such that $\theta(x, t_f)$ is "as close as possible" to some desired $\theta_d$, on the condition that $u \in U_{\mathrm{ad}}$. More formally, we wish to solve
 \begin{subequations}
 \begin{equation}\label{eq:cost-func}  % Abuse of notation?
-   \min J(\theta, u) = \frac{\alpha}{2} \iint_Q (\theta - \theta_d)^2 \mathop{dx} \mathop{dt} + \frac{\beta}{2} \int_0^{t_f} u^2 \mathop{dt}
+   \min J(\theta, u) = \frac{1}{2} \int_\Omega (\theta(x, T) - \theta_d)^2 \mathop{dx} \mathop{dt} + \frac{\gamma}{2} \int_0^T u^2 \mathop{dt}
 \end{equation}
 subject to
 \begin{equation}
