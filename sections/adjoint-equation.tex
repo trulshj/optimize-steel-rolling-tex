@@ -1,0 +1,83 @@
+
+\subsection{Weak formulation and the adjoint eqution}
+
+We start by finding the weak formulation for the problem defined in \eqref{eq:heat}. We multiply the equation \eqref{eq:heat-in-omega} by a test function $\psi\in H^1(\Omega)$, and integrate over the domain $Q$. Then partial integration gives
+\begin{equation}
+\begin{aligned}
+  0 &= \iint_Q (\theta_t - \frac{k}{\rho c_p}\Delta\theta)\psi\dxdt  \\
+  &= \iint_Q \theta_t\psi\dxdt + \frac{k}{\rho c_p}\iint_Q\nabla\theta\nabla\psi\dxdt - \frac{k}{\rho c_p}\iint_{\partial Q}\partial_\nu\theta\psi\dxdt.
+\end{aligned}
+\end{equation}
+Now after inserting for the boundary conditions defined in \eqref{eq:heat}, we end up with the following weak formulation of the state equation
+\begin{equation}
+  \begin{aligned}\label{eq:weak-form}
+  \iint_Q \theta_t\psi\dxdt + \frac{k}{\rho c_p}\iint_Q\nabla\theta\nabla\psi &\dxdt + \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)\theta\psi\dsdt \\
+  &= \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)\theta_w\psi\dsdt,
+  \end{aligned}
+\end{equation}
+where $\Sigma_i = \Gamma_i\times(0,T)$.
+
+From the weak formulation of the problem, we can easily set up the Lagrangian function, by subtracting the weak formulation of the problem \eqref{eq:weak-form} from the cost functional \eqref{eq:cost-func}. The test function is replaced with a Lagrange multiplier function $p$. This gives
+\begin{equation}
+  \begin{aligned}\label{eq:lagrangian-raw}
+  \mathcal{L}(\theta, u, p) = &\,J(\theta, u) - \iint_Q \theta_t p\dxdt - \frac{k}{\rho c_p}\iint_Q\nabla\theta\nabla p \dxdt \\
+  &- \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)\theta p\dsdt
+  + \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)\theta_w p\dsdt.
+  \end{aligned}
+\end{equation}
+
+\subsubsection{Adjoint equation}
+Now we derive the adjoint equation. This is done by  setting the directional derivative of the Lagrangian (with respect to the state variable) equal to zero. Assume the direction $h\in H^1(Q)$ is such that $h(x, 0) = 0$. % Antagelsen h(x, 0) = 0 popper visst ut av seg selv hvis man gjør noe på en bestemt måte i følge Dietmar.
+This gives
+\begin{equation}
+  \begin{aligned}
+  0 = \mathcal{L}_\theta(\theta, u, p)h = \int_\Omega (\theta(x,T) - \theta_d)h(x, T)\dx - \iint_Q h_t p\dxdt \\
+  - \frac{k}{\rho c_p}\iint_Q\nabla h\nabla p \dxdt
+  - \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)h p\dsdt
+  \end{aligned}
+\end{equation}
+Partial integration then gives
+\begin{equation} % Skip this calculation?
+  \begin{aligned}
+  0 = \mathcal{L}_\theta(\theta, u, p)h = \int_\Omega \theta(x,T) - \theta_d)h(x, T)\dx - \int_\Omega hp\Big|_0^T \dx \\
+  + \iint_Q h p_t\dxdt
+  + \frac{k}{\rho c_p}\iint_Q h\Delta p \dxdt \\
+  - \frac{k}{\rho c_p} \iint_{\partial Q}\partial_\nu p\cdot h\dsdt
+  - \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)h p\dsdt
+  \end{aligned}
+\end{equation}
+Now after som reordering of the terms we get
+\begin{equation}
+  \begin{aligned}
+  0 = \mathcal{L}_\theta(\theta, u, p)h = \int_\Omega \theta(x,T) - \theta_d-p(x, T))h(x, T)\dx \\
+  + \iint_Q h \left( p_t + \frac{k}{\rho c_p}\Delta p\right) \dxdt
+   - \frac{k}{\rho c_p} \iint_{\Sigma_2}\partial_\nu p\cdot h\dsdt \\
+   + \frac{1}{\rho c_p} \iint_{\Sigma_1}h(  -k\partial_\nu p - u(t)p )\dsdt.
+  \end{aligned}
+\end{equation}
+Now we let $h\in H_0^1(Q)$. Then we are only left with the second integral, which must still be equal to zero for every $h$ in the chosen function space. We then get that
+\begin{equation*}
+  \rho c_p p_t + k\Delta p = 0 \quad\textrm{ in } \Omega.
+\end{equation*}
+Now letting $h\in H^1(Q)$ such that $h(x, T) = 0$ and $h|_{\Sigma_2}=0$ gives that
+\begin{equation*}
+  -k\frac{\partial p}{\partial\nu} = u(t)p \quad\textrm{ in } \Sigma_1.
+\end{equation*}
+Now we replace tha last condition on $h$ from above with $h|_{\Sigma_1}=0$ and get
+\begin{equation*}
+  -k\frac{\partial p}{\partial\nu} = 0 \quad\textrm{ in } \Sigma_2.
+\end{equation*}
+Now finally we just let $h\in H^1(Q)$ and we are left with
+\begin{equation*}
+  p(x, T) = \theta(x, T) - \theta_d
+\end{equation*}
+This constitues the \textit{adjoint equation}, which we restate below
+\begin{subequations}
+   \label{eq:adjoint-eqn}
+   \begin{align} % Approved by Dietmar!
+      \rho c_p p_t + k\Delta p &= 0 \quad\qquad\textrm{ in } \Omega \\
+      -k\frac{\partial p}{\partial\nu} &= u(t)p \,\,\quad\textrm{ in } \Sigma_1 \\
+      -k\frac{\partial p}{\partial\nu} &= 0 \,\quad\qquad\textrm{ in } \Sigma_2 \\
+      p(x, T) &= \theta(x, T) - \theta_d.
+   \end{align}
+\end{subequations}
