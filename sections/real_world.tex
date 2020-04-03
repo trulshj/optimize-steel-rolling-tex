@@ -2,7 +2,7 @@
 
 To do our numerical simulations, we will first consider the thermal conducitivty, density and heat capacity to be constants, we divide by $\rho c_p$ in \eqref{eq:heat} to get 
 \begin{equation*}
-    \theta_t - \alpha \nabla \cdot (\nabla \theta) = 0 \quad \text{in $\Omega \time (0,T)$ }
+    \theta_t - \alpha \nabla \cdot (\nabla \theta) = 0 \quad \text{in $\Omega \times (0,T)$ }
 \end{equation*}
 Here $\alpha = \frac{k}{\rho c_p}$ is the Thermal diffusivity. To do a simulation we can set $\alpha = 3.352 mm^2/s$ to represents stainless steel, one could also simulate other materials by choosing other values of $\alpha$. To represent iron one set $\alpha_{iron} = 23 mm^2/s$. Furthermore we need the thermal conducitivity as it appears in the boundary conditions. Our choice of parameters is shown in Table 
 
