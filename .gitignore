@@ -4,4 +4,6 @@
 *.log
 *.gz
 *.pdf
+!figures/
+!figures/*.pdf
 .vscode
