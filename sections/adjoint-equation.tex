@@ -1,11 +1,11 @@
 
 \subsection{The adjoint eqution and the gradient}
 
-We start by finding the weak formulation for the problem defined in \eqref{eq:heat}. We multiply the equation \eqref{eq:heat-in-omega} by a test function $\psi\in H^1(\Omega)$, and integrate over the domain $Q$. Then partial integration gives
+We start by finding the weak formulation for the problem defined in \eqref{eq:heat}. We multiply the equation \eqref{eq:heat-in-omega} by a test function $\psi\in H^1(\Omega)$, and integrate over the domain $Q$. Assuming that $k$ is a scalar, partial integration gives
 \begin{equation}
 \begin{aligned}
   0 &= \iint_Q (\theta_t - \frac{k}{\rho c_p}\Delta\theta)\psi\dxdt  \\
-  &= \iint_Q \theta_t\psi\dxdt + \frac{k}{\rho c_p}\iint_Q\nabla\theta\nabla\psi\dxdt - \frac{k}{\rho c_p}\iint_{\partial Q}\partial_\nu\theta\psi\dxdt.
+  &= \iint_Q \theta_t\psi\dxdt + \frac{k}{\rho c_p}\iint_Q\nabla\theta\nabla\psi\dxdt - \frac{k}{\rho c_p}\iint_{\partial Q}\partial_\nu\theta\psi\dsdt.
 \end{aligned}
 \end{equation}
 Now after inserting for the boundary conditions defined in \eqref{eq:heat}, we end up with the following weak formulation of the state equation
@@ -29,7 +29,7 @@ This gives
   \begin{aligned}
   0 = \L_\theta(\theta, u, p)h = \int_\Omega (\theta(x,T) - \theta_d)h(x, T)\dx - \iint_Q h_t p\dxdt \\
   - \frac{k}{\rho c_p}\iint_Q\nabla h\nabla p \dxdt
-  - \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)h p\dsdt
+  - \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)h p\dsdt.
   \end{aligned}
 \end{equation}
 Partial integration then gives
@@ -39,7 +39,7 @@ Partial integration then gives
   + \iint_Q h p_t\dxdt
   + \frac{k}{\rho c_p}\iint_Q h\Delta p \dxdt \\
   - \frac{k}{\rho c_p} \iint_{\partial Q}\partial_\nu p\cdot h\dsdt
-  - \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)h p\dsdt
+  - \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)h p\dsdt.
   \end{aligned}
 \end{equation}
 Now after som reordering of the terms we get
@@ -59,7 +59,7 @@ Now letting $h\in H^1(Q)$ such that $h(x, T) = 0$ and $h|_{\Sigma_2}=0$ gives th
 \begin{equation*}
   -k\frac{\partial p}{\partial\nu} = u(t)p \quad\textrm{ in } \Sigma_1.
 \end{equation*}
-Now we replace tha last condition on $h$ from above with $h|_{\Sigma_1}=0$ and get
+Now we replace the last condition on $h$ from above with $h|_{\Sigma_1}=0$ and get
 \begin{equation*}
   -k\frac{\partial p}{\partial\nu} = 0 \quad\textrm{ in } \Sigma_2.
 \end{equation*}
@@ -77,12 +77,55 @@ This constitues the \textit{adjoint equation}, which we restate below
       p(x, T) &= \theta(x, T) - \theta_d.
    \end{align}
 \end{subequations}
+This adjoint equation for the adjoint state $p$ runs backwards in time, but since the final condition i.e. $p(x,T)$ is predescribed instead of the initial condition, the problem is well-posed. If one had posed $p|_{t=0}$ instead one would have gotten an ill-posed backward parabolic equation. driving force is end termperature differnce
 
 \subsubsection{Gradient}
-To derive the gradient of our problem \eqref{eq:cost-func}, we differentiate the Lagrangian \eqref{eq:lagrangian-raw} again, but now with respect to the control $u$. We still differentiate in direction $h$, but now note that $h\in H^1(0, T)$. This gives
+To derive the gradient of the cost functional given in \eqref{eq:cost-func}, we differentiate the Lagrangian \eqref{eq:lagrangian-raw} again, but now with respect to the control $u$. We still differentiate in direction $h$, but now note that $h\in H^1(0, T)$. This gives
 \begin{equation}
 \begin{aligned} % Fikk hjelp av Dietmar for denne, så den skal være good.
   \L_u(\theta, u, p) h &= \gamma\int_0^T uh \dt - \frac{1}{\rho c_p} \iint\limits_{0\,\,\Gamma_1}^{\,\,\,T}(\theta - \theta_w)p \dsdt \\
   &= \int_0^T h \left( \gamma u - \frac{1}{\rho c_p} \int_{\Gamma_1}(\theta - \theta_w)p \mathop{ds} \right) \dt.
 \end{aligned}
+\end{equation}
+
+The space $H^1(0,T)$ is a hilbert space. By Riesz representation theorem we can identify $H$ with $H^{*}$ for any Hilbert space $H$. Therefore by identifying using an isomorphism we find that the u-derivative of the lagranginan is
+
+\begin{equation*}
+    \L_u(\theta,u,p) = \gamma u - \frac{1}{\rho c_p}\int_{\Gamma_1}(\theta - \theta_w)p \ds
+\end{equation*}
+
+
+\subsection{Optimality System}
+Now the optimality system of our control problem, \eqref{eq:heat} consists of the state equation, the adjoint equation and the variational inequality, the two latter are obtained by requiring that the $y$- and $u$-derivative of the Lagrange function do vanish. Therefore the total optimality system become
+
+\begin{align*}
+    \begin{cases}
+     \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) = 0 \quad & \text{in $\Omega$}, \\
+      -k \frac{\partial \theta}{\partial \nu} = u(t) (\theta - \theta_w) &\text{on } \Gamma_1, \\
+      -k \frac{\partial \theta}{\partial \nu} = 0  &\text{on } \Gamma_0, \\
+      \theta(x, 0) = \theta_0 
+      \end{cases}
+      \end{align*}
+      \begin{align*}
+      \begin{cases}
+       \rho c_p p_t + k\Delta p &= 0 \quad\qquad\textrm{ in } \Omega \\
+      -k\frac{\partial p}{\partial\nu} &= u(t)p \,\,\quad\textrm{ in } \Sigma_1 \\
+      -k\frac{\partial p}{\partial\nu} &= 0 \,\quad\qquad\textrm{ in } \Sigma_2 \\
+      p(x, T) &= \theta(x, T) - \theta_d.
+      \end{cases}
+      \end{align*}
+\begin{equation*}
+      \gamma u - \frac{1}{\rho c_p} \int_{\Gamma_1} (\theta - \theta_w)p \ds = 0
+\end{equation*}
+
+Each of these are first-order optimality condition which needs to be satisfied for a control $u\in U_{ad}$. We know that if the control-to-state operator $e(y,u) = 0$ representing the heat equation is bijective then $\exists$ an adjoint state $p\in (range(e(y,u))^{*}$ such that the optimaility system is satisfied. Now one can restate this optimalilty system using the projection formula if one assume box-constraints. That is if we assume
+
+\begin{equation}
+    \label{eq:box_constraints}
+    U_{ad} := \{ u \in L^2(\Sigma_1): u_a(x,t) \leq u(x,t) \leq u_b(x,t) \text{ for a.e. } (x,t) \in \Sigma_1 \}
+\end{equation}
+Then a control $\bar{u} \in U_{ad}$ and the associated state $\bar{y}$ is optimal if and only if it satisfy togheter with the adjoint state $p$ solving \eqref{eq:adjoint-eqn}  and $\gamma >0$ i.e. the regularizaing parameter is positive that
+\begin{equation}
+    \label{eq:Proj_formula}
+    \bar{u(x,t)} = \mathbb{P}_{[u_a(x,t),u_b(x,t)]} \{\frac{1}{\gamma}\theta_w(x,t)p(x,t) \}
 \end{equation}

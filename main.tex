@@ -3,6 +3,10 @@
 \include{setup/packages}
 \include{setup/commands}
 
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
 
 \title{TMA4183 Steel Optimization}
 \author{}
@@ -13,20 +17,20 @@
 \maketitle
 
 \section{Introduction}
-The problem is defined by
+We want to consider the optimal control problem for the controlled cooling of steel in order to obtain a desired temperature, $\theta_d$. In order to model such a cooling process mathematically we use linear heat equation as state equation given by
 \begin{subequations}
    \label{eq:heat}
    \begin{align}
-      \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) &= 0 \quad &\text{in } \Omega,\label{eq:heat-in-omega} \\
-      -k \frac{\partial \theta}{\partial \nu} &= u(t) (\theta - \theta_w) \quad &\text{on } \Gamma_1, \\
-      -k \frac{\partial \theta}{\partial \nu} &= 0 \quad &\text{on } \Gamma_0, \\
-      \theta(x, 0) &= \theta_0 &
+      \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) &= 0 \quad &\text{in } \Omega \times (0,T),\label{eq:heat-in-omega} \\
+      -k \frac{\partial \theta}{\partial \nu} &= u(t) (\theta - \theta_w) \quad &\text{on } \Gamma_1 \times (0,T), \\
+      -k \frac{\partial \theta}{\partial \nu} &= 0 \quad &\text{on } \Gamma_0 \times (0,T), \\
+      \theta(x, 0) &= \theta_0 &\text{in } \Omega &
    \end{align}
 \end{subequations}
-Where $u = u(t) \colon \mathbb{R} \to \mathbb{R}$ is the scalar-valued, time dependent control. The goal is to determine a optimal $u$ such that $\theta(x, t_f)$ is "as close as possible" to some desired $\theta_d$, on the condition that $u \in U_{\mathrm{ad}}$. More formally, we wish to solve
+Where $u = u(t) \colon \mathbb{R} \to \mathbb{R}$ is the scalar-valued, time dependent heat transfer coefficient which acts as our unknown control. $c_p$ is the heat capacity, $k$ is thermal conductivity and $\rho$ is the density. The Neumann boundary condition in (1b) is based on Newton's law of cooling, here $\theta_w$ is the temperature of the applied coolant at the boundary. The goal is to determine a optimal $u$ such that $\theta(x, t_f)$ is "as close as possible" to some desired temperature $\theta_d$, where $t_f$ denotes the final time of the process, and we furthermore require that $u \in U_{\mathrm{ad}}$. More formally, we wish to minimize a cost functional of the form
 \begin{subequations}
 \begin{equation}\label{eq:cost-func}  % Abuse of notation?
-   \min J(\theta, u) = \frac{1}{2} \int_\Omega (\theta(x, T) - \theta_d)^2 \mathop{dx} \mathop{dt} + \frac{\gamma}{2} \int_0^T u^2 \mathop{dt}
+   \min J(\theta, u) = \frac{1}{2} \int_\Omega (\theta(x, T) - \theta_d)^2 \mathop{dx} \mathop{dt} + \frac{\gamma}{2} \int_0^{T} u^2 \mathop{dt}
 \end{equation}
 subject to
 \begin{equation}
@@ -37,9 +41,16 @@ and
    u \in U_{\mathrm{ad}}.
 \end{equation}
 \end{subequations}
-We have defined $Q \coloneqq \Omega \times (0, T)$.
+We have defined $Q \coloneqq \Omega \times (0, T)$. Here $\gamma \geq 0$ is a penalizing parameter, and the last term in $J(\theta, u)$ is a regularizing term which penalize high costs of the control. 
 
 \section{Main part}
 \input{sections/adjoint-equation}
+\input{sections/statesystem}
+\input{sections/real_world}
+
+
+% \printbibliography[heading=bibnumbered]
+\bibliographystyle{amsplain}
+\bibliography{ref}  
 
 \end{document}
