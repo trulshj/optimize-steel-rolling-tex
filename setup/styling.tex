@@ -1,0 +1,70 @@
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{microtype}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{environ}
+\usepackage{xcolor}
+
+% Font sizes:    Calculated using 1.2^k, k=1,...,5
+% 1.2
+% 1.44
+% 1.728
+% 2.0736
+% 2.48832
+
+\newtheoremstyle{pretty}
+  {\topsep}   % ABOVESPACE
+  {\topsep}   % BELOWSPACE
+  {\itshape}  % BODYFONT
+  {0pt}       % INDENT (empty value is the same as 0pt)
+  {\fontseries{b}\selectfont} % HEADFONT
+  {.}         % HEADPUNCT
+  {5pt plus 1pt minus 1pt} % HEADSPACE
+  {}          % CUSTOM-HEAD-SPEC
+
+\theoremstyle{pretty}
+
+
+
+\pretitle{
+    \begin{center}
+    \fontsize{1.728em}{1em}\fontseries{b}\selectfont
+}
+\posttitle{
+    \par
+    \end{center}
+    \vskip 0.5em
+}
+\preauthor{
+    \begin{center}
+    \fontsize{1.2em}{1.44em}\selectfont
+}
+\postauthor{
+    \end{center}
+}
+\predate{
+    \begin{center}
+    \fontsize{1.2em}{1.44em}\selectfont
+}
+\postdate{
+    \end{center}
+}
+
+\titleformat*{\section}{\fontsize{14.4pt}{1.728pt}\fontseries{b}\selectfont}
+\titleformat*{\subsection}{\fontsize{1.2em}{1.44em}\fontseries{b}\selectfont}
+\titleformat*{\subsubsection}{\fontseries{b}\selectfont}
+
+\newcommand{\textb}[1]{{\fontseries{b}\selectfont #1}}
+
+\NewEnviron{myBox}[1][teal!40]
+{
+\begin{center}
+\begin{tikzpicture}
+    \node [fill=#1, text width=\linewidth-1cm, align=justify, inner xsep=5mm, inner ysep=3mm] at (0, 0)
+    {\BODY};
+\end{tikzpicture}
+\end{center}
+}
