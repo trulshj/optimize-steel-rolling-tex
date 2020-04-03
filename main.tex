@@ -3,6 +3,8 @@
 \include{setup/packages}
 \include{setup/commands}
 
+\addbibresource{ref.bib}
+
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -49,8 +51,8 @@ We have defined $Q \coloneqq \Omega \times (0, T)$. Here $\gamma \geq 0$ is a pe
 \input{sections/real_world}
 
 
-% \printbibliography[heading=bibnumbered]
-\bibliographystyle{amsplain}
-\bibliography{ref}  
+\printbibliography
+% \bibliographystyle{alphabetic}
+% \bibliography{ref}  
 
 \end{document}
