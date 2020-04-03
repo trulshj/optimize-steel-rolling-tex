@@ -13,11 +13,11 @@ Here $\alpha = \frac{k}{\rho c_p}$ is the Thermal diffusivity. To do a simulatio
     \begin{tabular}{c|c}
     $\text{Parameter}$ & $\text{SI-unit}$ \\
     \hline
-       $k$& $50.2 J/msK$ \\
-        $c_p$ & $460.5 J/kgK$ \\
-        $\rho$ & $8500 kg/m^3$ \\
-        $\theta_w$ & $20\circ C$ \\
-        $\theta_d$ & $700 \circ C$ \\
+       $k$& $\SI{50.2}{\joule\per\metre\per\second\per\kelvin}$ \\
+        $c_p$ & $\SI{460.5}{\joule\per\kilogram\per\kelvin}$ \\
+        $\rho$ & $\SI{8500}{\kilogram\per\metre\cubed}$ \\
+        $\theta_w$ & $\SI{20}{\celsius}$ \\
+        $\theta_d$ & $\SI{700}{\celsius}$ \\
     \end{tabular}
     \caption{Parameters used for numerical simulation of the rolling of steel process.}
     \label{tab:chosenParam}
@@ -28,7 +28,7 @@ Here $\alpha = \frac{k}{\rho c_p}$ is the Thermal diffusivity. To do a simulatio
 
 A real-world simulation for the optimal cooling process of dual phase steels (DP steels) and in particular of the type Molydbenum-Magnesium in a rolling steel process can be modelled by choosing parameter with the value 
 \begin{align*}
-    \theta_d = 680~^{\circ}C \\
+    \theta_d = \SI{680}{\celsius} \\
 \end{align*}
 
 One can furthermore make the model more realistic by as in \cite{DPSteelOverview} by coupling the semilinear heat equation with an ordinary differential equation that describe the evolution of steel microstructure during the cooling process. Then one consider the optimal control problem for the controlled cooling of steel profiles in order to obtain a desired temperature and a phase distribution in the steel. Such a phase transformation can in general be described by an initial value problem of the form 
