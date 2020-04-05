@@ -1,6 +1,75 @@
 \section{Numerical implementation}
-To solve our optimal control problem we will consider two methods and compare their performance. We will implement the simpler Gradient Descent method and compare it to Newton's method. 
-
+To solve our optimal control problem we will consider two methods and compare their performance. We will implement the simpler Gradient Descent method and compare it to Newton's method. The gradient descent method has an infamous slow convergence rate, compared to the local quadratic convergence rate of Newton's method. Let $S$ be the solution operator for our state system. That is, let $S(u):=\theta$ so given a control $u$, $S$ transform the control into the solution of the state system. Then we can write our cost functional on reduced form, so our objective become to minimize the reduced cost functional 
+\begin{equation}
+\label{eq:optimization_prob}
+    \min_{u \in U}F(u) := J(S(u),u) = \frac{1}{2}\int_{\Omega}(S(u) - \theta_d)^2 \dx+ \frac{\gamma}{2}\int_0^Tu(t)^2\dt
+\end{equation}
 
 
 \subsection{Gradient Descent}
+The idea of a descent method consist of finding an optimal direction $d_k$ and stepsize $a_k$ at a given iteration $k$, where say our control is given by $u_k$. We want to find
+\begin{equation*}
+    F(u_k + \alpha_kd_k) < F(u_k)
+\end{equation*}
+
+One taylor expand the LHS around $u_k$ to get a way to choose the descent direction, typically one can take different means to decide this, but a descent direction can in general be chosen by 
+\begin{equation*}
+    d_k = \arg \min _{||d||_U=1} <\nabla F(u_k), d>_U
+\end{equation*}
+We consider gradient descent therefore we choose the descent direction by setting $d_k = -\nabla F(u_k)$. After deciding the gradient direction one need to determine how far to go in that direction, this is decided by $\alpha_k$, called \textit{line search} parameter. The ideal such parameter is 
+\begin{equation*}
+    a_k = \arg \min_{\alpha>0} \{ F(u_k + \alpha d_k) \}
+\end{equation*}
+There are different ways to choose this line search step. One require a couple of properties to be satisfied by this line search parameter these are
+\begin{align*}
+    F(u_k + \alpha_kd_k) < F(u_k) \text{  } \forall k \\
+    F(uk + \alpha_k d_k) - F(u_k) \rightarrow 0 \text{ as } k\rightarrow \infty
+\end{align*}
+We stick with Armijo rule as our line search strategy. This method consists of given a descent direction $d_k$ of F at $u_k$ choose the largest $a_k \in \{ 1, \frac{1}{2},\frac{1}{4},.. \}$ such that
+\begin{equation*}
+    F(u_k + \alpha_kd_k) - F(u_k) \leq \mu \alpha_k <\nabla F(u_k),d_k>_U
+\end{equation*}
+where $\mu \in (0,1)$ is a chosen constant. We set $\mu = 10^{-3}$. More facts about Armijo rule is in \cite{numMethods}. A pseudocode for the Gradient Descent method is shown in Algorithm 1. 
+
+\begin{codebox}
+\Procname{$\proc{Algorithm1: Steepest Descent with Armijo}$}
+\li Choose initial value $u^{(0)}\in U_{ad}$
+\li Solve state system to obtain $\theta^{(0)}$
+\li Solve adjoint system to obtain $p^{(0)}$
+\li $k=0$
+\li \While (\textbf{Not} stopping criteria) \Then
+\li Choose the descent Direction $d_k = -\nabla F(u_k)$
+\li Use Armijo rule to determine $\alpha_k$
+\li Set $u_{k+1} = u_k + \alpha_k d_k$
+\li Solve state system to obtain $\theta^{(k)}$
+\li Solve adjoint system to obtain $p^{(k)}$
+\li $k = k +1$
+\end{codebox}
+This is a globally convergent descent algorithm which we will apply to our control problem. Here as a typical stopping criterion we might use 
+\begin{equation}
+    \label{eq:stopping}
+    \tau := ||u^{(k+1)} - u^{(k)}||_U < tol
+\end{equation}
+This is to check that the controls converge towards a value, $U$ is the space of the controls. The gradient of our reduced cost functional is given by
+
+\begin{equation*}
+    \nabla F(u) = ...
+\end{equation*}
+We have global convergence if the reduced cost functional F is Fréchet differentiable and bounded from below. Now since the solution to the state system $S(u) \in W(0,T) \cap C(\bar{Q})$, $F$ is Fréchet differentiable. Moreover we have that $F(u) \geq 0$ for all choices of controls $u$. However we have a first-order descent method, and the local convergence is typically very slow. 
+
+\subsection{Newton's method}
+Another type of direction is obtained at each direction $d_k$ if one instead use a quadratic expansion. For Newton's method we need again the reduced cost function $F$ to be Fréchet differentiable and that its Fréchet derivative is boundedly invertible $\forall u \in U_{ad}$, or at least close to the true solution $\bar{u}$. We try to approximate a solution of the equation $F(u) = 0$ by repeatedly linearizing the function and solving the linearized system
+\begin{align}
+    \label{eq:Newton}
+    u_{k+1} = u_k - F'(u_k)^{-1}F(u_k)
+\end{align}
+
+
+Expect to observe superior convergence properties of Newton's method compared to Steepest Descent. The rate of convergence can be measured similarly as in \cite{DPSteel} by setting 
+\begin{equation}
+    \label{eq:rate_of_conv}
+    e_k := \frac{||u^{(k)}-\bar{u}||_U + ||\theta^{(k)}-\bar{\theta}||_{L^2(Q)} +||p^{(k)}-\bar{p}||_{L^2(Q)} }{||u^{(k+1)}-\bar{u}||_U + ||\theta^{(k+1)}-\bar{\theta}||_{L^2(Q)} +||p^{(k+1)}-\bar{p}||_{L^2(Q)}}
+\end{equation}
+where $(\bar{\theta},\bar{u},\bar{p})$ is the analytical solution to the control problem. We use this as a convergence test of the two algorithm on a control problem where we can find an analytical solution. 
+
+

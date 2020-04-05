@@ -1,29 +1,6 @@
 \section{Existence and uniquenes for the optimal control problem}
 
 \subsection{Existence and uniqueness state system}
-
-The state system for our optimal control problem is given by a linear parabolic partial differential equation, in particular a heat equation
-
-\begin{align*}
-      \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) &= 0 \quad &\text{in } \Omega \\
-      -k \frac{\partial \theta}{\partial \nu} &= u(t) (\theta - \theta_w) \quad &\text{on } \Gamma_1, \\
-      -k \frac{\partial \theta}{\partial \nu} &= 0 \quad &\text{on } \Gamma_0, \\
-      \theta(x, 0) &= \theta_0 &
-\end{align*}
-we can draw the domain $Q = \Omega \times (0,T)$, for the hot rolling of steel, we can draw our domain as a steel slab shown in .... More generally we require that $\Omega \subset \mathbb{R}^3$ is a bounded domain with a Lipschitz boundary, $\partial \Omega = \Gamma_1 \cup \Gamma_2$. A suitable function space for the solution of a linear parabolic PDE is 
-\begin{equation}
-    \label{eq:funcSpace}
-    W(0,T) : = \{ \theta \in L^2(0,T;H^1(\Omega)) : \quad \frac{\partial \theta}{\partial t} \in L^2(0,T;(H^1(\Omega))^{*}) \}
-\end{equation}
-It is natural to endow this space with the following norm, let $u \in W(0,T)$ then 
-\begin{equation*}
-    \|u\|_{W(0,T)} := \bigg (\int_{0}^T\|u(t)\|^2_{H^{1}(\Omega)}\dt \bigg ) ^{\frac{1}{2}} + \bigg (\int_{0}^T\|u'(t)\|^2_{H^{1}(\Omega)^{*}}\dt \bigg ) ^{\frac{1}{2}}
-\end{equation*}
-In general we mean by the notation $L^{p}(a,b,X)$ the linear space of all equivalence classes of measurable vector valued functions $u:[a,b] \rightarrow X$ which have the property that
-\begin{equation*}
-    \int_{a}^b\|u\|_X^p \dt<\infty
-\end{equation*}
-
 Need to consider the existence of a soluton to the state equation. In order to do so we consider a more general linear parabolic partial differential equation, and derive existence for that PDE, and use that to conclude about the existence for our particular problem as well. Consider the PDE given by
 
 \begin{align}

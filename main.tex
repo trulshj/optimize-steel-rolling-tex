@@ -1,9 +1,9 @@
 \documentclass{article}
 
-\include{setup/packages}
-\include{setup/commands}
+\input{setup/packages}
+\input{setup/commands}
 \input{setup/styling.tex}
-
+\renewcommand{\L}{\mathcal{L}}
 \addbibresource{ref.bib}
 
 \newtheorem{theorem}{Theorem}[section]
@@ -44,12 +44,15 @@ and
    u \in U_{\mathrm{ad}}.
 \end{equation}
 \end{subequations}
-We have defined $Q \coloneqq \Omega \times (0, T)$. Here $\gamma \geq 0$ is a penalizing parameter, and the last term in $J(\theta, u)$ is a regularizing term which penalize high costs of the control. 
+We have defined $Q \coloneqq \Omega \times (0, T)$. Here $\gamma \geq 0$ is a penalizing parameter called Tikhonov regularization parameter, and the last term in $J(\theta, u)$ is a regularizing term which penalize high costs of the control. 
 
 \section{Main part}
 \input{sections/adjoint-equation}
 \input{sections/statesystem}
 \input{sections/real_world}
+\input{sections/numerical_methods}
+\input{sections/numerical}
+\input{sections/conlusionetc}
 
 
 \printbibliography
