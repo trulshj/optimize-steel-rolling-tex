@@ -6,13 +6,13 @@ To solve our optimal control problem we will consider two methods and compare th
 \end{equation}
 
 
-\subsection{Gradient Descent}
+\subsection{Projected Gradient Descent}
 The idea of a descent method consist of finding an optimal direction $d_k$ and stepsize $a_k$ at a given iteration $k$, where say our control is given by $u_k$. We want to find
 \begin{equation*}
     F(u_k + \alpha_kd_k) < F(u_k)
 \end{equation*}
 
-One taylor expand the LHS around $u_k$ to get a way to choose the descent direction, typically one can take different means to decide this, but a descent direction can in general be chosen by 
+One Taylor expand the LHS around $u_k$ to get a way to choose the descent direction, typically one can take different means to decide this, but a descent direction can in general be chosen by 
 \begin{equation*}
     d_k = \arg \min _{||d||_U=1} <\nabla F(u_k), d>_U
 \end{equation*}
@@ -29,10 +29,15 @@ We stick with Armijo rule as our line search strategy. This method consists of g
 \begin{equation*}
     F(u_k + \alpha_kd_k) - F(u_k) \leq \mu \alpha_k <\nabla F(u_k),d_k>_U
 \end{equation*}
-where $\mu \in (0,1)$ is a chosen constant. We set $\mu = 10^{-3}$. More facts about Armijo rule is in \cite{numMethods}. A pseudocode for the Gradient Descent method is shown in Algorithm 1. 
+where $\mu \in (0,1)$ is a chosen constant. We set $\mu = 10^{-3}$. More facts about Armijo rule is in \cite{numMethods}. Now we have box constraints given in \eqref{eq:box_constraints}, that is we have a lower bound $u_a$ and upper bound $u_b$ for the control variable. Therefore we also ned to use a projection onto the set of admissable controls, that is why it is called the projected gradient descent method. We introduce a cut-off function i.e. a projection given by
+\begin{equation}
+    \label{eq:projection}
+    \mathbb{P}_{[u_a,u_b]}(v) := \max \{u_a, \min \{u_b,v \} \}
+\end{equation}
+this should hold componentwise, if one allow $u_a$ and $u_b$ to be vectors, notation is similar to \cite{Algorithms}. One have to introduce this into the gradient descent method. A pseudocode for the Projected Gradient Descent method is shown in Algorithm 1. 
 
 \begin{codebox}
-\Procname{$\proc{Algorithm1: Steepest Descent with Armijo}$}
+\Procname{$\proc{Algorithm1: Projected Steepest Descent with Armijo}$}
 \li Choose initial value $u^{(0)}\in U_{ad}$
 \li Solve state system to obtain $\theta^{(0)}$
 \li Solve adjoint system to obtain $p^{(0)}$
@@ -40,7 +45,7 @@ where $\mu \in (0,1)$ is a chosen constant. We set $\mu = 10^{-3}$. More facts a
 \li \While (\textbf{Not} stopping criteria) \Then
 \li Choose the descent Direction $d_k = -\nabla F(u_k)$
 \li Use Armijo rule to determine $\alpha_k$
-\li Set $u_{k+1} = u_k + \alpha_k d_k$
+\li Set $u_{k+1} = \mathbb{P}_{[u_a,u_b]}\bigg (u_k + \alpha_k d_k \bigg )$
 \li Solve state system to obtain $\theta^{(k)}$
 \li Solve adjoint system to obtain $p^{(k)}$
 \li $k = k +1$
@@ -63,6 +68,9 @@ Another type of direction is obtained at each direction $d_k$ if one instead use
     \label{eq:Newton}
     u_{k+1} = u_k - F'(u_k)^{-1}F(u_k)
 \end{align}
+
+
+Want to use Newton's method with a primal-dual active set strategy...... 
 
 
 Expect to observe superior convergence properties of Newton's method compared to Steepest Descent. The rate of convergence can be measured similarly as in \cite{DPSteel} by setting 
