@@ -65,7 +65,7 @@ Partial integration in time and in space then yields
   - \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)h p\dsdt.
   \end{aligned}
 \end{equation}
-Now after som reordering of the terms we get
+Now after some reordering of the terms we get
 \begin{equation}
   \begin{aligned}
   0 = \L_\theta(\theta, u, p)h = \int_\Omega \theta(x,T) - \theta_d-p(x, T))h(x, T)\dx \\
@@ -92,13 +92,13 @@ Now finally we just let $h\in H^1(Q)$ and we are left with
 \end{equation*}
 This constitues the \textit{adjoint equation}, which we restate below
 \begin{subequations}
-   \label{eq:adjoint-eqn}
    \begin{align} % Approved by Dietmar!
       \rho c_p p_t + k\Delta p &= 0 \quad\qquad\textrm{ in } \Omega \time (0,T) \\
-      -k\frac{\partial p}{\partial\nu} &= u(t)p \,\,\quad\textrm{ in } \Sigma_1 \\
-      -k\frac{\partial p}{\partial\nu} &= 0 \,\quad\qquad\textrm{ in } \Sigma_2 \\
+      {-k}\frac{\partial p}{\partial\nu} &= u(t)p \,\,\quad\textrm{ in } \Sigma_1 \\
+      {-k}\frac{\partial p}{\partial\nu} &= 0 \,\quad\qquad\textrm{ in } \Sigma_2 \\
       p(x, T) &= \theta(x, T) - \theta_d. \quad \textrm{ in } \Omega
    \end{align}
+   \label{eq:adjoint-eqn}
 \end{subequations}
 This adjoint equation for the adjoint state $p$ runs backwards in time, but since the final condition i.e. $p(x,T)$ is predescribed instead of the initial condition, the problem is well-posed. If one had posed $p|_{t=0}$ instead one would have gotten an ill-posed backward parabolic equation. The driving force is end-temperature difference between the desired state and the actual temperature state of the steel slab.
 

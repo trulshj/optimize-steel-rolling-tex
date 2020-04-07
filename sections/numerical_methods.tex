@@ -14,7 +14,7 @@ The idea of a descent method consist of finding an optimal direction $d_k$ and s
 
 One Taylor expand the LHS around $u_k$ to get a way to choose the descent direction, typically one can take different means to decide this, but a descent direction can in general be chosen by 
 \begin{equation*}
-    d_k = \arg \min _{||d||_U=1} <\nabla F(u_k), d>_U
+    d_k = \arg\min_{||d||_U=1} \langle \nabla F(u_k), d \rangle_U
 \end{equation*}
 We consider gradient descent therefore we choose the descent direction by setting $d_k = -\nabla F(u_k)$. After deciding the gradient direction one need to determine how far to go in that direction, this is decided by $\alpha_k$, called \textit{line search} parameter. The ideal such parameter is 
 \begin{equation*}
