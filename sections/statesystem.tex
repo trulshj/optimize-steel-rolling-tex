@@ -1,4 +1,4 @@
-\section{Existence and uniquenes for the optimal control problem}
+\section{Existence and uniquenes for the optimal control problem}\label{proof}
 
 \subsection{Existence and uniqueness state system}
 Need to consider the existence of a soluton to the state equation. In order to do so we consider a more general linear parabolic partial differential equation, and derive existence for that PDE, and use that to conclude about the existence for our particular problem as well. Consider the PDE given by
@@ -123,7 +123,7 @@ Take a test function $\phi \in H^1(\Omega)$ and integrate over our space-time cy
     \rho c_p \int_0^T\int_{\Omega}\frac{\partial \theta_{k'}}{\partial t}\phi \dxdt + k \int_0^T \int_{\Omega}\nabla \theta_{k'} \cdot \nabla \phi \dxdt \\ + \int_0^T \bigg (\int_{\Gamma_1}\theta_{k'}\phi \ds \bigg )u_{k'}(t) \dt =
     \int_0^T \bigg (\int_{\Gamma_1}\theta_w\phi \ds \bigg ) u_{k'} \dt 
 \end{align*}
-We want to see what happens if we pass to the limit $k' \rightarrow \infty$ in the equation. Due to the continuity of the solution $theta_{k'}$ we can pass to the limit and all terms converge. The solution to the state system is unique therefore setting
+We want to see what happens if we pass to the limit $k' \rightarrow \infty$ in the equation. Due to the continuity of the solution $\theta_{k'}$ we can pass to the limit and all terms converge. The solution to the state system is unique therefore setting
 \begin{align*}
     \theta(\bar{u}) = \bar{\theta} 
 \end{align*}

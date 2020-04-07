@@ -58,9 +58,10 @@ This is a globally convergent descent algorithm which we will apply to our contr
 This is to check that the controls converge towards a value, $U$ is the space of the controls. The gradient of our reduced cost functional is given by
 
 \begin{equation*}
-    \nabla F(u) = ...
+    \nabla F(u) =  \gamma u - \frac{1}{\rho c_p} \int_{\Gamma_1} (\theta - \theta_w)p \ds = 0
 \end{equation*}
-We have global convergence if the reduced cost functional F is Fréchet differentiable and bounded from below. Now since the solution to the state system $S(u) \in W(0,T) \cap C(\bar{Q})$, $F$ is Fréchet differentiable. Moreover we have that $F(u) \geq 0$ for all choices of controls $u$. However we have a first-order descent method, and the local convergence is typically very slow. 
+
+We have global convergence if the reduced cost functional F is Fréchet differentiable and bounded from below. Now since the solution to the state system $S(u) \in W(0,T) \cap C(\bar{Q})$, $F$ is Fréchet differentiable. Moreover we have that $F(u) \geq 0$ for all choices of controls $u \in U_{ad}$. However we have a first-order descent method, and the local convergence is typically very slow. 
 
 \subsection{Newton's method}
 Another type of direction is obtained at each direction $d_k$ if one instead use a quadratic expansion. For Newton's method we need again the reduced cost function $F$ to be Fréchet differentiable and that its Fréchet derivative is boundedly invertible $\forall u \in U_{ad}$, or at least close to the true solution $\bar{u}$. We try to approximate a solution of the equation $F(u) = 0$ by repeatedly linearizing the function and solving the linearized system
@@ -80,4 +81,4 @@ Expect to observe superior convergence properties of Newton's method compared to
 \end{equation}
 where $(\bar{\theta},\bar{u},\bar{p})$ is the analytical solution to the control problem. We use this as a convergence test of the two algorithm on a control problem where we can find an analytical solution. 
 
-
+Other mentionable methods to use on the optimal control problem is the sequential quadratic programming (SQP) method \cite{Algorithms}, and reduced SQP \cite{DPSteel}. 

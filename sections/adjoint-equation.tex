@@ -1,5 +1,5 @@
 
-The state system for our optimal control problem is given by a linear parabolic partial differential equation, in particular a heat equation
+In this section we will use the formal Langrange method to derive the adjoint equation and the optimality system \cite{optimalControl}. Formal in the sense that we use a lagrange multiplier $p$ without proving its existence in the derivation done her, we do that in Section \ref{proof}. The state system for our optimal control problem is given by a linear parabolic partial differential equation, in particular a heat equation
 
 \begin{align*}
       \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) &= 0 \quad &\text{in } \Omega \\
@@ -103,18 +103,32 @@ This constitues the \textit{adjoint equation}, which we restate below
 This adjoint equation for the adjoint state $p$ runs backwards in time, but since the final condition i.e. $p(x,T)$ is predescribed instead of the initial condition, the problem is well-posed. If one had posed $p|_{t=0}$ instead one would have gotten an ill-posed backward parabolic equation. The driving force is end-temperature difference between the desired state and the actual temperature state of the steel slab.
 
 \subsubsection{Gradient}
-To derive the gradient of the cost functional given in \eqref{eq:cost-func}, we differentiate the Lagrangian \eqref{eq:lagrangian-raw} again, but now with respect to the control $u$. We still differentiate in direction $h$, but now note that $h\in H^1(0, T)$. This gives
+We assume box-constraints \eqref{eq:box_constraints}, then we can derive the variational inequality which is a first-order neccessary optimality condition to be satisfied by an optimal control $\bar{u} \in U_{ad}$. The variational inequality is given by 
+\begin{equation*}
+    \L_u(\bar{\theta},\bar{u},p)(u-\bar{u}) \geq 0 \text{ for } \forall u\in U_{ad}
+\end{equation*}
+Let $h = u - \bar{u}$, we differentiate in direction $h$, but now note that $h\in H^1(0, T)$. This gives
 \begin{equation}
 \begin{aligned} % Fikk hjelp av Dietmar for denne, så den skal være good.
   \L_u(\theta, u, p) h &= \gamma\int_0^T uh \dt - \frac{1}{\rho c_p} \iint\limits_{0\,\,\Gamma_1}^{\,\,\,T}(\theta - \theta_w)ph \dsdt \\
   &= \int_0^T h \left( \gamma u - \frac{1}{\rho c_p} \int_{\Gamma_1}(\theta - \theta_w)p \mathop{ds} \right) \dt.
 \end{aligned}
 \end{equation}
+There inserting back for $h$ we have derived the variational inequality for our system, which states that
+\begin{equation}
+    \label{eq:variational}
+    \int_0^T (u - \bar{u})(t) \left( \gamma \bar{u} - \frac{1}{\rho c_p} \int_{\Gamma_1}(\bar{\theta} - \theta_w)p \mathop{ds} \right) \dt \geq 0 \text{ for } \forall u \in U_{ad}
+\end{equation}
 
-The space $H^1(0,T)$ is a hilbert space. By Riesz representation theorem we can identify $H$ with $H^{*}$ for any Hilbert space $H$. Therefore by identifying using an isomorphism we find that the u-derivative of the lagranginan is
+The gradient of the reduced cost funtional $F(u) := J(y(u),u)$ can be obtained from 
+\begin{equation*}
+    F'(u) = \L_u(y(u),u,p(u))
+\end{equation*}
+
+The space $H^1(0,T)$ is a hilbert space. By Riesz representation theorem we can identify $H$ with $H^{*}$ for any Hilbert space $H$. Therefore by identifying using an isomorphism we find that the u-derivative of the lagranginan and consequentely the gradient of our reduced cost functional is
 
 \begin{equation*}
-    \L_u(\theta,u,p) = \gamma u - \frac{1}{\rho c_p}\int_{\Gamma_1}(\theta - \theta_w)p \ds
+    F'(u) = \L_u(\theta,u,p) = \gamma u - \frac{1}{\rho c_p}\int_{\Gamma_1}(\theta - \theta_w)p \ds.
 \end{equation*}
 
 
@@ -150,7 +164,7 @@ Now one can restate this optimalilty system using the projection formula if one 
     U_{ad} := \{ u \in L^2(\Sigma_1): u_a(x,t) \leq u(x,t) \leq u_b(x,t) \text{ for a.e. } (x,t) \in \Sigma_1 \}
 \end{equation}
 Then a control $\bar{u} \in U_{ad}$ and the associated state $\bar{y}$ is optimal if and only if it satisfy togheter with the adjoint state $p$ solving \eqref{eq:adjoint-eqn}  and $\gamma >0$ i.e. the regularizaing parameter is positive that
-\begin{equation}
-    \label{eq:Proj_formula}
-    \bar{u(x,t)} = \mathbb{P}_{[u_a(x,t),u_b(x,t)]} \{\frac{1}{\gamma}\theta_w(x,t)p(x,t) \}
-\end{equation}
+%\begin{equation}
+%    \label{eq:Proj_formula}
+%    \bar{u(x,t)} = \mathbb{P}_{[u_a(x,t),u_b(x,t)]} \{\frac{1}{\gamma}\theta_w(x,t)p(x,t) \}
+%\end{equation}
