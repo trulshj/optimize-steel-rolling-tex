@@ -27,41 +27,49 @@ There are different ways to choose this line search step. One require a couple o
 \end{align*}
 We stick with Armijo rule as our line search strategy. This method consists of given a descent direction $d_k$ of F at $u_k$ choose the largest $a_k \in \{ 1, \frac{1}{2},\frac{1}{4},.. \}$ such that
 \begin{equation*}
-    F(u_k + \alpha_kd_k) - F(u_k) \leq \mu \alpha_k <\nabla F(u_k),d_k>_U
+    F (u_k + \alpha_kd_k) - F(u_k) \leq \mu \alpha_k \langle \nabla F(u_k),d_k \rangle_{U}
 \end{equation*}
-where $\mu \in (0,1)$ is a chosen constant. We set $\mu = 10^{-3}$. More facts about Armijo rule is in \cite{numMethods}. Now we have box constraints given in \eqref{eq:box_constraints}, that is we have a lower bound $u_a$ and upper bound $u_b$ for the control variable. Therefore we also ned to use a projection onto the set of admissable controls, that is why it is called the projected gradient descent method. We introduce a cut-off function i.e. a projection given by
+where $\mu \in (0,1)$ is a chosen constant. We set $\mu = 10^{-3}$. More facts about Armijo rule is in \cite{numMethods}. However we have control-constraints, so we need to ensure the argument is placed inside the admissable set of controls $U_{ad}$, in particular we have box constraints given in \eqref{eq:box_constraints}, that is we have a lower bound $u_a$ and upper bound $u_b$ for the control variable. Therefore we need to use a projection onto the set of admissable controls, that is why it is called the projected gradient descent method. We introduce a cut-off function i.e. a projection given by
 \begin{equation}
     \label{eq:projection}
     \mathbb{P}_{[u_a,u_b]}(v) := \max \{u_a, \min \{u_b,v \} \}
 \end{equation}
-this should hold componentwise, if one allow $u_a$ and $u_b$ to be vectors, notation is similar to \cite{Algorithms}. One have to introduce this into the gradient descent method. A pseudocode for the Projected Gradient Descent method is shown in Algorithm 1. 
+this should hold componentwise, if one allow $u_a$ and $u_b$ to be vectors, notation is similar to \cite{Algorithms}. One have to introduce this into the gradient descent method and Armijo's rule, so the rule instead become determining $\alpha_k \in \{1, \frac{1}{2},\frac{1}{4},.. \}$ such that 
+\begin{equation*}
+    F \bigg (\mathbb{P}_{[u_a,u_b]}(u_k + \alpha_kd_k) \bigg ) - F(u_k) \leq \mu \alpha_k \langle \nabla F(u_k),d_k \rangle_{U}
+\end{equation*}
+A pseudocode for the whole Projected Gradient Descent method is shown in Algorithm 1. We introduce two stopping criterion's, one based on the minimum allowed step length, and one on the difference in the computed values of the control given by 
+\begin{equation}
+    \label{eq:stopping}
+    \tau := ||u^{(k+1)} - u^{(k)}||_U 
+\end{equation}
+This is to check that the controls converge towards a value, $U$ is the space of the controls. 
 
 \begin{codebox}
 \Procname{$\proc{Algorithm1: Projected Steepest Descent with Armijo}$}
 \li Choose initial value $u^{(0)}\in U_{ad}$
+\li Set tolerance $tol$ and $\alpha_{min}$
 \li Solve state system to obtain $\theta^{(0)}$
 \li Solve adjoint system to obtain $p^{(0)}$
 \li $k=0$
-\li \While (\textbf{Not} stopping criteria) \Then
+\li \While ($\tau > tol$)  \Then
 \li Choose the descent Direction $d_k = -\nabla F(u_k)$
 \li Use Armijo rule to determine $\alpha_k$
+\li \If $\alpha_k < \alpha_{min}$ \Then 
+\li \textbf{Break} \End
 \li Set $u_{k+1} = \mathbb{P}_{[u_a,u_b]}\bigg (u_k + \alpha_k d_k \bigg )$
 \li Solve state system to obtain $\theta^{(k)}$
 \li Solve adjoint system to obtain $p^{(k)}$
+\li Compute $\tau$
 \li $k = k +1$
 \end{codebox}
-This is a globally convergent descent algorithm which we will apply to our control problem. Here as a typical stopping criterion we might use 
-\begin{equation}
-    \label{eq:stopping}
-    \tau := ||u^{(k+1)} - u^{(k)}||_U < tol
-\end{equation}
-This is to check that the controls converge towards a value, $U$ is the space of the controls. The gradient of our reduced cost functional is given by
+This is the projected descent algorithm which we will apply to our control problem. The gradient of our reduced cost functional is given by
 
 \begin{equation*}
     \nabla F(u) =  \gamma u - \frac{1}{\rho c_p} \int_{\Gamma_1} (\theta - \theta_w)p \ds = 0
 \end{equation*}
 
-We have global convergence if the reduced cost functional F is Fréchet differentiable and bounded from below. Now since the solution to the state system $S(u) \in W(0,T) \cap C(\bar{Q})$, $F$ is Fréchet differentiable. Moreover we have that $F(u) \geq 0$ for all choices of controls $u \in U_{ad}$. However we have a first-order descent method, and the local convergence is typically very slow. 
+The projected gradient descent method is globally convergent if the reduced cost functional F is Fréchet differentiable and bounded from below. Now since the solution to the state system $S(u) \in W(0,T) \cap C(\bar{Q})$, $F$ is indeed Fréchet differentiable. Moreover we have that $F(u) \geq 0$ for all choices of controls $u \in U_{ad}$ by the definition of $F(u)$ therefore we have global convergence. However this is a first-order descent method, and the convergence rate is typically very slow. 
 
 \subsection{Newton's method}
 Another type of direction is obtained at each direction $d_k$ if one instead use a quadratic expansion. For Newton's method we need again the reduced cost function $F$ to be Fréchet differentiable and that its Fréchet derivative is boundedly invertible $\forall u \in U_{ad}$, or at least close to the true solution $\bar{u}$. We try to approximate a solution of the equation $F(u) = 0$ by repeatedly linearizing the function and solving the linearized system
