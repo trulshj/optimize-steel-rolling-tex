@@ -33,7 +33,7 @@ We want to consider the optimal control problem for the controlled cooling of st
 Where $u = u(t) \colon \mathbb{R} \to \mathbb{R}$ is the scalar-valued, time dependent heat transfer coefficient which acts as our unknown control. $c_p$ is the heat capacity, $k$ is thermal conductivity and $\rho$ is the density. The Neumann boundary condition in (1b) is based on Newton's law of cooling, here $\theta_w$ is the temperature of the applied coolant at the boundary. The goal is to determine a optimal $u$ such that $\theta(x, t_f)$ is "as close as possible" to some desired temperature $\theta_d$, where $t_f$ denotes the final time of the process, and we furthermore require that $u \in U_{\mathrm{ad}}$. More formally, we wish to minimize a cost functional of the form
 \begin{subequations}
 \begin{equation}\label{eq:cost-func}  % Abuse of notation?
-   \min J(\theta, u) = \frac{1}{2} \int_\Omega (\theta(x, T) - \theta_d)^2 \mathop{dx} \mathop{dt} + \frac{\gamma}{2} \int_0^{T} u^2 \mathop{dt}
+   \min J(\theta, u) = \frac{1}{2} \int_\Omega (\theta(x, T) - \theta_d)^2 \mathop{dx} + \frac{\gamma}{2} \int_0^{T} u^2 \mathop{dt}
 \end{equation}
 subject to
 \begin{equation}
@@ -44,7 +44,9 @@ and
    u \in U_{\mathrm{ad}}.
 \end{equation}
 \end{subequations}
-We have defined $Q \coloneqq \Omega \times (0, T)$. Here $\gamma \geq 0$ is a penalizing parameter called Tikhonov regularization parameter, and the last term in $J(\theta, u)$ is a regularizing term which penalize high costs of the control. 
+We have defined $Q \coloneqq \Omega \times (0, T)$. Here $\gamma \geq 0$ is a penalizing parameter called Tikhonov regularization parameter, and the last term in $J(\theta, u)$ is a regularizing term which penalize high costs of the control.
+
+In this report we shall first develop first-order optimality conditions for \eqref{eq:heat}, then in Section 3 we prove existence of an optimal control, then we consider two black-box methods; The projected Gradient and Newton's method with primal-dual active set strategy, and finally we consider their performance on a test problem and on the actual problem we are solving. 
 
 \section{Main part}
 \input{sections/adjoint-equation}

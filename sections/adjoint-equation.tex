@@ -93,10 +93,10 @@ Now finally we just let $h\in H^1(Q)$ and we are left with
 This constitutes the \textit{adjoint equation}, which we restate below
 \begin{subequations}
    \begin{align} % Approved by Dietmar!
-      \rho c_p p_t + k\Delta p &= 0 \quad\qquad\textrm{ in } \Omega \time (0,T) \\
+      \rho c_p p_t + k\Delta p &= 0 \quad\qquad\textrm{ in } \Omega \times (0,T) \\
       {-k}\frac{\partial p}{\partial\nu} &= u(t)p \,\,\quad\textrm{ in } \Sigma_1 \\
       {-k}\frac{\partial p}{\partial\nu} &= 0 \,\quad\qquad\textrm{ in } \Sigma_2 \\
-      p(x, T) &= \theta(x, T) - \theta_d. \quad \textrm{ in } \Omega
+      \rho c_p p(x, T) &= \theta(x, T) - \theta_d. \quad \textrm{ in } \Omega
    \end{align}
    \label{eq:adjoint-eqn}
 \end{subequations}
@@ -152,7 +152,7 @@ Now the optimality system of our control problem, \eqref{eq:heat} consists of th
       \end{cases}
       \end{align*}
 \begin{equation*}
-      \gamma u - \frac{1}{\rho c_p} \int_{\Gamma_1} (\theta - \theta_w)p \ds = 0
+      \gamma u - \frac{1}{\rho c_p} \int_{\Gamma_1} (\theta - \theta_w)p \ds \geq 0
 \end{equation*}
 
 This system is a first order necessary optimality condition. That is if $\bar{u} \in U_{ad}$ is an optimal control to our optimal control problem and $\bar{\theta} = S(\bar{u})$ is the associated solution to the state system. Then $\exists$ an adjoint state $\bar{p}$ such that the adjoin system is satisfied, and the variational inequality is satisfied. 
