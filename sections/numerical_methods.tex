@@ -1,12 +1,89 @@
+
 \section{Numerical implementation}
-To solve our optimal control problem we will consider two gradient-based optimization methods \cite{Algorithms}, and compare their performance. We will implement the simpler Gradient Descent method and compare it to Newton's method. The gradient descent method has an infamous slow convergence rate, compared to the super linear convergence rate of Newton's method. Now since both methods are gradient-based, we need to consider the reduced optimal control problem. Let $S$ be the solution operator for our state system. That is, let $S(u):=\theta$ so given a control $u$, $S$ transform the control into the associated temperature distribution i.e. the solution of the state system. Then we can write our cost functional on reduced form, so our objective become to minimize the reduced cost functional 
+
+To solve our optimal control problem we will consider two gradient-based optimization methods \cite{Algorithms}, and compare their performance. We will implement the simpler Gradient Descent method and compare it to Newton's method. The gradient descent method has an infamous slow convergence rate, compared to the super linear convergence rate of Newton's method.
+
+Now since both methods are gradient-based, we need to consider the reduced optimal control problem. Let $S$ be the solution operator for our state system. That is, let $S(u):=\theta(.,T)$ so given a control $u$, $S$ transform the control into the associated final temperature distribution i.e. the solution of the state system at end time. Then we can write our cost functional on reduced form, so our objective become to minimize the reduced cost functional 
 \begin{equation}
 \label{eq:optimization_prob}
     \min_{u \in U}F(u) := J(S(u),u) = \frac{1}{2}\int_{\Omega}(S(u) - \theta_d)^2 \dx+ \frac{\gamma}{2}\int_0^Tu(t)^2\dt
 \end{equation}
 
+The operator S is compact. Now for every $u \in L^2(\Sigma)$ the state system admits a unique solution $\theta \text{ in } L^2(0,T;H^1(\Omega)) \cap C(0,T;L^2(\Omega)$ where $\theta_t \in L^2(0,T;H^1(\Omega)^{*})$. Now due to the bound in Corollary 3.1.1 we have that for every $\delta \in (0,\frac{1}{2})$ there exist a constant $k_{\delta}$ such that 
+\begin{equation*}
+    ||S(u)||_{H^{\delta}(\Omega)} \leq k_{\delta}||u||_{L^2(\Sigma)} \text{ } \forall u \in L^2(\Sigma)
+\end{equation*}
+And $H^{\delta}$ embeds compactly into $L^2(\Omega)$ therefore S is indeed compact this argument was taken from \cite{primal_dual}. 
+
+
+\subsection{Solution of the State- and Adjoint equations}
+
+The state equation and the adjoint equations were both solved numerically with the finite element method, using the finite element programming framework FEniCS \cite{fenics} in python.
+
+
+\subsubsection{State equation}
+
+For solving the state equation system \eqref{eq:heat} we discretise $\theta$ in time using explicit Euler, so we let
+\begin{equation*}
+    \theta_t \approx \frac{\theta^{n+1} - \theta^n}{\Delta t}.
+\end{equation*}
+This is inserted into the equation \eqref{eq:heat-in-omega}. $\theta^{n+1}$ is the unknown, so we set this to just $\theta$. This gives
+\begin{equation*}
+    \theta - \Delta t\frac{k}{\rho c_p}\Delta \theta = \theta^n.
+\end{equation*}
+We now multiply with a test function $v\in H^1(\Omega)$, and integrate over the domain, and get
+\begin{equation*}
+    \int_\Omega \theta v \dx - \Delta t\frac{k}{\rho c_p}\int_\Omega \Delta\theta\dx = \int_\Omega \theta^n v\dx.
+\end{equation*}
+For the implementation it is convenient to combine the two Neumann boundary conditions \eqref{eq:state-system-bd-1} and \eqref{eq:state-system-bd-2} into the following expression
+\begin{equation*}
+    -k\frac{\partial \theta}{\partial n} = \alpha(x)u(t)(\theta - \theta_w) \quad\text{where}\quad \alpha(x) = [x\in\Gamma_1],
+\end{equation*}
+where we have used the Iverson bracket in the definition of $\alpha$. Partial integration then lead to the weak form
+\begin{equation*}
+\begin{aligned}
+    \int_\Omega \theta v\dx + \Delta t\frac{k}{\rho c_p}\int_\Omega\nabla\theta\nabla v\dx &+ \frac{\Delta t}{\rho c_p}\int_{\partial\Omega}\alpha(x)u(t)\theta v\ds \\
+    &= \int_\Omega\theta^n v\dx + \frac{\Delta t}{\rho c_p}\int_{\partial\Omega}\alpha(x)u(t)\theta_w v\ds.
+\end{aligned}
+\end{equation*}
+The left hand side, and the left hand side of the weak form above, is a bilinear map, and a linear functional respectively, so we write
+\begin{equation*}
+    a_S(\theta, v) = L_S(v; \theta^n).
+\end{equation*}
+In the implementation we set $\theta^0$ using the initial condition given in the system \eqref{eq:heat}, and solve the equation above iteratively forward in time.
+
+
+\subsubsection{Adjoint equation}
+
+The adjoint system \eqref{eq:adjoint-system} is solved backwards in time. For the time discretisation of $p$ we again use explicit Euler, so we let 
+\begin{equation*}
+ p_t \approx \frac{p^{n+1} - p^n}{\Delta t}.
+\end{equation*}
+Since the equation is solved backwards in time, $p^n$ is here the unknown, so we set $p=p^n$, and insert into the adjoint system \eqref{eq:adjoint-system-eqn}. We then get
+\begin{equation*}
+    p - \Delta t\frac{k}{\rho c_p}\Delta p =  p^{n+1}, 
+\end{equation*}
+% Now multiply with a test function $v\in H^1(\Omega)$ and integrate over the spatial domain to get
+% \begin{equation*}
+% \int_\Omega pv\dx - \Delta t\frac{k}{\rho c_p}\int_\Omega % \Delta p v \dx = \int_\Omega p^{n+1} v \dx
+% \end{equation*}
+Again we combine the two Neumann boundary conditions \eqref{eq:adjoint-system-bd-1} and \eqref{eq:adjoint-system-bd-2} into one expression:
+\begin{equation*}
+    -k\frac{\partial p}{\partial n} = \alpha(x)u(t)p,
+\end{equation*}
+where $\alpha$ is as defined above. Now we again multiply with a test function $v\in H^1(\Omega)$ and integrate over the spatial domain. Then partial integragion then leads us to the weak form
+\begin{equation*}
+    \int_\Omega pv\dx + \Delta t\frac{k}{\rho c_p} \int_\Omega \nabla p \nabla v \dx + \frac{\Delta t}{\rho c_p}\int_{\partial\Omega} \alpha(x)u(t)pv \ds  = \int_\Omega p^{n+1}v\dx.
+\end{equation*}
+For the FEniCS implementation we let the left hand side and the right hand side be the bilinear, and linar form respectively, and we thus write
+\begin{equation*}
+    a_A(p, v) = L_A(v; p^{n+1}).
+\end{equation*}
+For the implementation we initialise $p^{T/\Delta t}$ using the end time conditions in the adjoint system \eqref{eq:adjoint-system}, and then solve the system above at each time step, backwards in time.m
+
 
 \subsection{Projected Gradient Descent}
+
 The idea of a descent method consist of finding an optimal direction $d_k$ and stepsize $a_k$ at a given iteration $k$, where say our control is given by $u_k$. We want to find
 \begin{equation*}
     F(u_k + \alpha_kd_k) < F(u_k)
@@ -127,7 +204,7 @@ The next dual variable $\mu_{k+1}$ is set to be zero on the the inactive set $I_
 
 \begin{codebox}
 \Procname{$\proc{Algorithm2: Newton's method with Primal-Dual Active Set Strategy}$}
-\li Choose initial value $u^{(0)} \in U_{ad}$ and $\mu_0$ 
+\li Choose initial value $u^{(0)}$ and $\mu_0$ 
 \li Set tolerance $tol$
 \li Set $k = 0$
 \li Solve state system to obtain $\theta^{(0)}$
@@ -156,7 +233,7 @@ The next dual variable $\mu_{k+1}$ is set to be zero on the the inactive set $I_
 \li $k = k+1$
 \end{codebox}
 
-Where $\tau$ is calculated as in Algorithm 1. We do not globalise the algorithm here, but that can be done to achieve convergence from an arbitrary starting point. This is done by for instance carrying out a few gradient descent steps in the starting phase, and then switching over to Newton's method. The notion used here is similar to that in \cite{Algorithms}. 
+Where $\tau$ is calculated as in Algorithm 1.  Numerical experiments show that algorithm is rather insensitive to the initial control $u_0$  \cite{primal_dual}. In the article by Kunish and Rösch \cite{primal_dual} it is proven that when the algorithm satisfy the stopping criteria in step 9, then the last iterate produced $(u_n, \theta_n, p_n, \mu_n)$ satisfy the optimality system for the original optimal control problem. Furthermore a convergence analysis of the algorithm is carried out in the same article. Now the practical behaviour for some active set stragies is that the controls computed in the iterations are infeasible, except for the last iteration which is feasible. By the argument in \cite{primal_dual} the algorithm stops at a feasible and optimal point. The algorithm can be made more efficient by for instance carrying out a few gradient descent steps in the starting phase, and then switching over to Newton's method. The notion used here is similar to that in \cite{Algorithms}. \bigskip
 
 Expect to observe superior convergence properties of Newton's method compared to Steepest Descent, as Newton's method is superlinearly convergent compared to $q$-linearly convergent. The rate of convergence can be measured similarly as in \cite{DPSteel} by setting 
 \begin{equation}

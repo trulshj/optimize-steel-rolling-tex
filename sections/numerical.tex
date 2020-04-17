@@ -1,24 +1,22 @@
 \section{Test cases}
-\begin{figure}
-    \centering
-    % \includegraphics{figures/steel_slab_visualization.jpg}
-    \input{figures/steel_slab_tikz}
-    \caption{An illustration of our steel slab where we have shown the applied cooling, we have isolation on $\Sigma_2$ by the optimal control problem \eqref{eq:heat}}
-    \label{fig:steel_slab}
-\end{figure}
 
 In the case of dual phase steel we can consider a more realistic scenario used in the industry. To do so we introduce two desired temperatures $\theta_{d_1}$ and $\theta_{d_2}$. For the optimal cooling of dual phase steel there is a phase transition in the higher temperature regime, this is modelled by the desired temperature $\theta_{d_1}$ which we want to be attained in a subset $[c_1T, c_2T]$ of $[0,T]$ with $c_2 <1$. Then we expect the optimal cooling to lead to a rapid cooling towards $\theta_{d_1}$ and stay almost constant until $t=c_2T$. Then we also expect the optimal cooling strategy to lead to a rapid cooling towards the new final desired temperature $\theta_{d_2}$. In order to model this scenario we need to introduce an extra term to the cost functional. Consequently we will get a new adjoint system, however the expression for the gradient stays the same, as the new term does not involve the control, so we can apply the Projected gradient method in Algorithm 1 almost without doing any modifications. The new cost functional is given by 
-
 \begin{equation}
+\begin{aligned}
     \label{eq:new_cost}
-    J(\theta,u) : = \frac{\alpha_1}{2}\iint_{Q}\chi_{[c_1T,c_2T]}(\theta(x,t) - \theta_{d_1}(x,t))^2 \dxdt + \frac{\alpha_2}{2}\int_{\Omega} (\theta(x,T) - \theta_{d_2})^2 \dxdt + \frac{\gamma}{2}\int_0^T|u(t)|^2\dt
+    J(\theta,u) : =& \frac{\alpha_1}{2}\iint_{Q}\chi_{[c_1T,c_2T]}(\theta(x,t) - \theta_{d_1}(x,t))^2 \dxdt \\
+    &+ \frac{\alpha_2}{2}\int_{\Omega} (\theta(x,T) - \theta_{d_2})^2 \mathop{dx} + \frac{\gamma}{2}\int_0^T|u(t)|^2\dt
+\end{aligned}
 \end{equation}
-
 Here $\chi_E$ denotes the characteristic function for the set $E$. For convenience we formulate the whole optimal control problem in this case. 
-
+\begin{equation*}
+\begin{aligned}
+   \min J(\theta, u) =& \frac{\alpha_1}{2}\iint_{Q}\chi_{[c_1T,c_2T]}(\theta(x,t) - \theta_{d_1}(x,t))^2 \dxdt \\
+   &+ \frac{\alpha_2}{2} \int_\Omega (\theta(x, T) - \theta_{d_2}(x))^2 \mathop{dx} + \frac{\gamma}{2} \int_0^{T} |u(t)|^2 \mathop{dt} 
+\end{aligned}
+\end{equation*}
+subject to
 \begin{align*}
-       \min J(\theta, u) = \frac{\alpha_1}{2}\iint_{Q}\chi_{[c_1T,c_2T]}(\theta(x,t) - \theta_{d_1}(x,t))^2 \dxdt + \frac{\alpha_2}{2} \int_\Omega (\theta(x, T) - \theta_d)^2 \mathop{dx} \mathop{dt} + \frac{\gamma}{2} \int_0^{T} u^2 \mathop{dt} \\
-       \text{subject to} \\
        \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) &= 0 \quad &\text{in } Q  \\
       -k \frac{\partial \theta}{\partial \nu} &= u(t) (\theta - \theta_w) \quad &\text{on } \Sigma_1, \\
       -k \frac{\partial \theta}{\partial \nu} &= 0 \quad &\text{on } \Sigma_0, \\
@@ -29,9 +27,22 @@ We again use the formal Lagrange method to derive the adjoint system. The lagran
 
 \begin{equation}
   \begin{aligned}
-  0 = \L_\theta(\theta, u, p)h = \alpha_2 \int_\Omega (\theta(x,T) - \theta_d)h(x, T)\dx - \iint_Q h_t p\dxdt \\
+  0 = \L_\theta(\theta, u, p)h = \alpha_2 \int_\Omega (\theta(x,T) - \theta_{d_2})h(x, T)\dx - \iint_Q h_t p\dxdt \\
   - \frac{k}{\rho c_p}\iint_Q\nabla h\nabla p \dxdt
   - \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)h p\dsdt \\
   + \alpha_1 \iint_{Q}\chi_{[c_1T,c_2T]}(\theta - \theta_{d_1})h \dxdt
   \end{aligned}
 \end{equation}
+
+Then we may use partial integration, and a similar argument as used to derive the adjoint system \eqref{eq:adjoint-system} to get the adjoint system in this case. The adjoint system is given by 
+
+\begin{subequations}
+   \begin{align*} 
+      \rho c_p p_t + k\Delta p + \chi_{[c_1T,c_2T]}\alpha_1(\theta - \theta_{d_1})&= 0 \quad\qquad\textrm{ in } Q  \\
+      {-k}\frac{\partial p}{\partial\nu} &= u(t)p \,\,\quad\textrm{ on } \Sigma_1  \\
+      {-k}\frac{\partial p}{\partial\nu} &= 0 \,\quad\qquad\textrm{ on } \Sigma_0  \\
+      \rho c_p p(x, T) &= \alpha_2(\theta(x, T) - \theta_{d_2}). \quad \textrm{ in } \Omega
+   \end{align*}
+\end{subequations}
+
+Now we see that we got the additional term $\alpha_1(\theta-\theta_{d_1})$ in the PDE, thus the adjoint state $p$ depends on the temperature distribution. We expect to observe a non-constant control u in this scenario as opposed to  

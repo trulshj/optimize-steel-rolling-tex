@@ -1,5 +1,5 @@
 
-In this section we will use the formal Langrange method to derive the adjoint equation and the optimality system \cite{optimalControl}. Formal in the sense that we use a lagrange multiplier $p$ without proving its existence in the derivation done her, we do that in Section \ref{proof}. The state system for our optimal control problem is given by a linear parabolic partial differential equation, in particular a heat equation
+In this section we will use the formal Langrange method to derive the adjoint equation and the optimality system \cite{optimalControl}. Formal in the sense that we use a lagrange multiplier $p$ without proving its existence in the derivation done here, we do that in Section \ref{proof}. The state system for our optimal control problem is given by a linear parabolic partial differential equation, in particular a heat equation
 
 \begin{align*}
       \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) &= 0 \quad &\text{in } \Omega \\
@@ -7,7 +7,16 @@ In this section we will use the formal Langrange method to derive the adjoint eq
       -k \frac{\partial \theta}{\partial \nu} &= 0 \quad &\text{on } \Gamma_0, \\
       \theta(x, 0) &= \theta_0 &
 \end{align*}
-we can draw the domain $Q = \Omega \times (0,T)$, for the hot rolling of steel, we can draw our domain as a steel slab shown in .... More generally we require that $\Omega \subset \mathbb{R}^3$ is a bounded domain with a Lipschitz boundary, $\partial \Omega = \Gamma_1 \cup \Gamma_2$. A suitable function space for the solution of a linear parabolic PDE is 
+The domain $Q = \Omega \times (0,T)$, for the hot rolling of steel is shown in Figure \ref{fig:steel_slab}. The blue arrows represent the coolant being sprayed onto the steel slab. The boundary $\gamma_1$ is marked, while the dashed lines represent $\gamma_2$. 
+\begin{figure}
+    \centering
+    % \includegraphics{figures/steel_slab_visualization.jpg}
+    \input{figures/steel_slab_tikz}
+    \caption{An illustration of our steel slab where we have shown the applied cooling, we have isolation on $\Sigma_2$ by the optimal control problem \eqref{eq:heat}}
+    \label{fig:steel_slab}
+\end{figure}
+
+More generally one may consider a domain $\Omega \subset \mathbb{R}^3$ which is bounded with a Lipschitz boundary, $\partial \Omega = \Gamma_1 \cup \Gamma_2$. A suitable function space for the solution of a linear parabolic PDE is 
 \begin{equation}
     \label{eq:funcSpace}
     W(0,T) : = \{ \theta \in L^2(0,T;H^1(\Omega)) : \quad \frac{\partial \theta}{\partial t} \in L^2(0,T;(H^1(\Omega))^{*}) \}
@@ -65,12 +74,12 @@ Partial integration in time and in space then yields
   - \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)h p\dsdt.
   \end{aligned}
 \end{equation}
-Now after some reordering of the terms we get
+After some reordering of the terms we get
 \begin{equation}
   \begin{aligned}
   0 = \L_\theta(\theta, u, p)h = \int_\Omega \theta(x,T) - \theta_d-p(x, T))h(x, T)\dx \\
   + \iint_Q h \left( p_t + \frac{k}{\rho c_p}\Delta p\right) \dxdt
-   - \frac{k}{\rho c_p} \iint_{\Sigma_2}\partial_\nu p\cdot h\dsdt \\
+   - \frac{k}{\rho c_p} \iint_{\Sigma_0}\partial_\nu p\cdot h\dsdt \\
    - \frac{1}{\rho c_p} \iint_{\Sigma_1}h(  k\partial_\nu p + u(t)p )\dsdt.
   \end{aligned}
 \end{equation}
@@ -78,24 +87,24 @@ Now we let $h\in H_0^1(Q)$ i.e. vanishing at the boundary. Then we are only left
 \begin{equation*}
   \rho c_p p_t + k\Delta p = 0 \quad\textrm{ in } \Omega.
 \end{equation*}
-Now letting $h\in H^1(Q)$ such that $h(x, T) = 0$ and $h|_{\Sigma_2}=0$ gives that
+Letting $h\in H^1(Q)$ such that $h(x, T) = 0$ and $h|_{\Sigma_0}=0$ gives that
 \begin{equation*}
   -k\frac{\partial p}{\partial\nu} = u(t)p \quad\textrm{ in } \Sigma_1.
 \end{equation*}
 Now we replace the last condition on $h$ from above with $h|_{\Sigma_1}=0$ and get
 \begin{equation*}
-  -k\frac{\partial p}{\partial\nu} = 0 \quad\textrm{ in } \Sigma_2.
+  -k\frac{\partial p}{\partial\nu} = 0 \quad\textrm{ in } \Sigma_0.
 \end{equation*}
-Now finally we just let $h\in H^1(Q)$ and we are left with
+We finally let $h\in H^1(Q)$, and are then left with
 \begin{equation*}
   p(x, T) = \theta(x, T) - \theta_d
 \end{equation*}
 This constitutes the \textit{adjoint equation}, which we restate below
-\begin{subequations}
+\begin{subequations}\label{eq:adjoint-system}
    \begin{align} % Approved by Dietmar!
-      \rho c_p p_t + k\Delta p &= 0 \quad\qquad\textrm{ in } \Omega \times (0,T) \\
-      {-k}\frac{\partial p}{\partial\nu} &= u(t)p \,\,\quad\textrm{ in } \Sigma_1 \\
-      {-k}\frac{\partial p}{\partial\nu} &= 0 \,\quad\qquad\textrm{ in } \Sigma_2 \\
+      \rho c_p p_t + k\Delta p &= 0 \quad\qquad\textrm{ in } \Omega \times (0,T) \label{eq:adjoint-system-eqn} \\
+      {-k}\frac{\partial p}{\partial\nu} &= u(t)p \,\,\quad\textrm{ in } \Sigma_1 \label{eq:adjoint-system-bd-1} \\
+      {-k}\frac{\partial p}{\partial\nu} &= 0 \,\quad\qquad\textrm{ in } \Sigma_0 \label{eq:adjoint-system-bd-2} \\
       \rho c_p p(x, T) &= \theta(x, T) - \theta_d. \quad \textrm{ in } \Omega
    \end{align}
    \label{eq:adjoint-eqn}
