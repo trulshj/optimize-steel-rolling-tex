@@ -2,7 +2,7 @@
 
 
 \subsection{Further improvements to the model}
-One can make our model more realistic as in \cite{DPSteelOverview} by coupling the semilinear heat equation with an ordinary differential equation that describe the evolution of steel microstructure during the cooling process. Then one consider the optimal control problem for the controlled cooling of steel profiles in order to obtain a desired temperature and a phase distribution in the steel, so one get an additional variable to control. Such a phase transformation in the steel microstructure can in general be described by an initial value problem of the form 
+The model can take even more physical situations into consideration as in \cite{DPSteelOverview} by coupling the  heat equation with an ordinary differential equation that describe the evolution of steel microstructure during the cooling process. Then one consider the optimal control problem for the controlled cooling of steel profiles in order to obtain a desired temperature and a phase distribution in the steel, thus one get two control variables. Such a phase transformation in the steel microstructure can in general be described by an initial value problem of the form 
 \begin{align*}
     \frac{\partial f}{\partial t} = G(f,\theta ) \\
     f_{t=0} = 0
@@ -16,10 +16,12 @@ Then one can modify the heat equation to include a right-hand side term $\rho L 
     -k \frac{\partial \theta}{\partial n} = 0 \quad \textrm{ on } \Sigma_2 \\
     \theta(x,0) = \theta_0(x) \quad \textrm{ in } \Omega
 \end{align*}
+Here we still operate with isolation on the boundary $\Sigma_2$. We now also want to obtain desired phase distribution at the end of the cooling process, denoted $f_d(x)$. This can be modelled mathematically by including an extra quadratic tracking term of the phase distribution into the cost functional. The resulting cost functional then become
 
-Furthermore one have a desired phase distribution one want to obtain, denoted $f_d(x)$ one then modify the cost functional as well to obtain an approximation to the desired phase distribution. That is one get a cost functional of the form 
 \begin{equation*}
-    J(\theta, f, u) := \frac{\alpha_1}{2}\int_{\Omega}(f(x,T)-f_d(x))^2\dx + \frac{\alpha_2}{2}\int_{\Omega}(\theta(x,T) - \theta_d(x))^2\dx + \frac{\alpha_3}{2}\int_0^Tu(t)^2 \dt
+\begin{aligned}
+        J(\theta, f, u) := \frac{\alpha_1}{2}\int_{\Omega}(f(x,T)-f_d(x))^2\dx + \frac{\alpha_2}{2}\int_{\Omega}(\theta(x,T) - \theta_d(x))^2\dx \\ + \frac{\alpha_3}{2}\int_0^Tu(t)^2 \dt
+\end{aligned}
 \end{equation*}
 
-Then choosing the appropriate function $G(f,\theta)$ depends on what phase-transformation one consider, and $L$ also depends upon the chosen phase-transformation. The coolant profile $\beta(x)$ must also be chosen. Furthermore one need to choose the desired temperature profile $\theta_d(x)$ and the desired volume-fraction profile over the microstructure $f_d(x)$. All these depending on the particular application, making this a more general model than what we have been considering. 
+Choosing the appropriate function $G(f,\theta)$ depends on the particular phase-transformation one consider, and $L$ also depends upon the chosen phase-transformation. The coolant profile $\beta(x)$ must also be chosen. Furthermore one need to choose the desired temperature profile $\theta_d(x)$ and the desired volume-fraction profile for the microstructure $f_d(x)$. All these depending on the particular application, this mathematical model is used in the industry. 
