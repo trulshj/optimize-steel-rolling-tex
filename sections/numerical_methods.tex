@@ -1,5 +1,5 @@
 \section{Numerical implementation}
-To solve our optimal control problem we will consider two Black-box methods \cite{Algorithms}, and compare their performance. We will implement the simpler Gradient Descent method and compare it to Newton's method. The gradient descent method has an infamous slow convergence rate, compared to the super linear convergence rate of Newton's method. Now since both methods are Black-Box methods, we need to consider the reduced optimal control problem. Let $S$ be the solution operator for our state system. That is, let $S(u):=\theta$ so given a control $u$, $S$ transform the control into the associated temperature distribution i.e. the solution of the state system. Then we can write our cost functional on reduced form, so our objective become to minimize the reduced cost functional 
+To solve our optimal control problem we will consider two gradient-based optimization methods \cite{Algorithms}, and compare their performance. We will implement the simpler Gradient Descent method and compare it to Newton's method. The gradient descent method has an infamous slow convergence rate, compared to the super linear convergence rate of Newton's method. Now since both methods are gradient-based, we need to consider the reduced optimal control problem. Let $S$ be the solution operator for our state system. That is, let $S(u):=\theta$ so given a control $u$, $S$ transform the control into the associated temperature distribution i.e. the solution of the state system. Then we can write our cost functional on reduced form, so our objective become to minimize the reduced cost functional 
 \begin{equation}
 \label{eq:optimization_prob}
     \min_{u \in U}F(u) := J(S(u),u) = \frac{1}{2}\int_{\Omega}(S(u) - \theta_d)^2 \dx+ \frac{\gamma}{2}\int_0^Tu(t)^2\dt
@@ -132,25 +132,28 @@ The next dual variable $\mu_{k+1}$ is set to be zero on the the inactive set $I_
 \li Set $k = 0$
 \li Solve state system to obtain $\theta^{(0)}$
 \li Solve adjoint system to obtain $p^{(0)}$
-\li \While $(\tau > tol)$ \Then 
+\li \While $(\tau > \id{tol})$ \Then 
 \li Evaluate the reduced gradient $\nabla F(u_k)$
 \li Compute the active sets $A_k^{+}$ and $A_k^{-}$
 \li \If $A_k^{+} = A_{k-1}^{+}$ and $A_{k-1}^{-} = A_k^{-}$ \Then 
-\li \textbf{Break} \End
+\li \textbf{break} \End
 \li Solve the Newtonian system given in \eqref{eq:Newton_system} iteratively
-\li Set $u^{(k+1)} = u^{(k)} + \delta u$  
-\li Set 
-\begin{equation*}
-    \mu_{k+1}(t) = 
-    \begin{cases}
-     u_k + \delta u \text{ if } t \in A_k \\
-     0 \qquad \text{ if } t \in I_k
-     \end{cases}
-\end{equation*}
-\li Solve state system to obtain $\theta(^{(k+1)}$ using $u^{(k+1)}$
+\li $u^{(k+1)} = u^{(k)} + \delta u$  
+\li \If $t \in A_k$ \Then
+    \li $\mu_{k+1} = u_k + \delta u$
+    \li \Else $\mu_{k+1} = 0$ 
+    \End
+%\begin{equation*}
+%    \mu_{k+1}(t) = 
+%    \begin{cases}
+%     u_k + \delta u \text{ if } t \in A_k \\
+%     0 \qquad \text{ if } t \in I_k
+%     \end{cases}
+% \end{equation*}
+\li Solve state system to obtain $\theta^{(k+1)}$ using $u^{(k+1)}$
 \li Solve adjoint system to obtain $p^{(k+1)}$ 
 \li Compute $\tau$
-\li Set $k = k+1$
+\li $k = k+1$
 \end{codebox}
 
 Where $\tau$ is calculated as in Algorithm 1. We do not globalise the algorithm here, but that can be done to achieve convergence from an arbitrary starting point. This is done by for instance carrying out a few gradient descent steps in the starting phase, and then switching over to Newton's method. The notion used here is similar to that in \cite{Algorithms}. 

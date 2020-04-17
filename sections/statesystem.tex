@@ -10,7 +10,7 @@ Need to consider the existence of a soluton to the state equation. In order to d
     u(.,0) = u_0(.) \quad \text{in } \Omega
 \end{align}
 It does not predescribe any difficulties by splitting the boundary $\Gamma$ into disjoint parts, and predescribe Neumann conditions on them separately. The functions $\alpha$, $\beta$, $f$ and $g$ all depend on $(x,t)$. Here $A$ is an elliptic differential operator of the following form
-
+%
 \begin{equation*}
     Af(x) := -\sum_{i,j}^N\frac{\partial}{\partial x_i}(a_{ij}(x)\frac{\partial}{\partial x_j}f(x)) \quad x\in \Omega
 \end{equation*}
@@ -97,9 +97,9 @@ If the assumptions in the previous theorem are satisfied, then there exist at le
 \begin{align*}
        \min J(\theta, u) = \frac{1}{2} \int_\Omega (\theta(x, T) - \theta_d)^2 \mathop{dx} \mathop{dt} + \frac{\gamma}{2} \int_0^{T} u^2 \mathop{dt} \\
        \text{subject to} \\
-       \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) &= 0 \quad &\text{in } \Omega  \\
-      -k \frac{\partial \theta}{\partial \nu} &= u(t) (\theta - \theta_w) \quad &\text{on } \Gamma_1, \\
-      -k \frac{\partial \theta}{\partial \nu} &= 0 \quad &\text{on } \Gamma_0, \\
+       \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) &= 0 \quad &\text{in } Q  \\
+      -k \frac{\partial \theta}{\partial \nu} &= u(t) (\theta - \theta_w) \quad &\text{on } \Sigma_1, \\
+      -k \frac{\partial \theta}{\partial \nu} &= 0 \quad &\text{on } \Sigma_0, \\
       \theta(x, 0) &= \theta_0 &
 \end{align*}
 \end{theorem}
