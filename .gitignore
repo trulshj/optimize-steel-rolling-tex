@@ -7,3 +7,11 @@
 !figures/
 !figures/*.pdf
 .vscode
+.DS_Store
+*__latexindent_temp.tex
+*.bbl
+*.bcf
+*.blg
+*.dvi
+*.xml
+*.xdv
