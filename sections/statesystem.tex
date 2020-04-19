@@ -107,27 +107,27 @@ If the assumptions in the previous theorem are satisfied, then there exist at le
 \begin{proof}
 We follow the same footsteps as in  \cite{DPSteel}. By the theorem about the existence of a unique solution we know there exists a state $\theta \in W(0,T) \times C([0,T];L^2(\Omega))$ that solves the state equation for every control $u \in U_{ad}$. Now $U_{ad}$ is bounded by $L^{\infty}(0,T)$ therefore the solution $\theta$ is bounded in $W(0,T)$. Now the cost functional is thus bounded hence $\exists$ a minimizing sequence $\{(\theta_k,u_k)\}_{k\in \mathbb{N}}$ such that we have 
 \begin{equation*}
-    lim_{k\rightarrow \infty}J(\theta_k,u_k) = inf_{(\theta,u)}J(\theta,u)
+    \lim_{k\rightarrow \infty}J(\theta_k,u_k) = \inf_{(\theta,u)}J(\theta,u)
 \end{equation*}
 
 We introduce a solution operator $S(u_k):= (\theta_k, u_k)$, that is $(\theta_k,u_k)$ is a solution to the state system with respect to the control $u_k$. Now assuming box-constraints the set $U_{ad}$ is bounded, closed and convex, therefore there exist a subsequence $\{u_{k'} \}_{k'}$ of controls such that one have weak convergence towards a limit in $L^2(0,T)$ that is s.t.
 \begin{equation*}
-    u_{k'} \rightharpoonup \bar{u} \text{ in} L^2(0,T)
+    u_{k'} \rightharpoonup \bar{u} \text{ in } L^2(0,T)
 \end{equation*}
 Using our existence corollary we know there exist a solution to the state system with $u_k$ as our choice as control, we might therefore extract a new subsequence if necessary which we still index by $k'$ such that
 \begin{equation*}
-    \theta_{k'} \rightharpoonup \theta \text{ in} W(0,T) \text{ and strongly in } L^2(Q)
+    \theta_{k'} \rightharpoonup \theta \text{ in } W(0,T) \text{ and strongly in } L^2(Q)
 \end{equation*}
-Take a test function $\phi \in H^1(\Omega)$ and integrate over our space-time cylinder $Q$ we then have 
+Take a test function $\phi \in H^1(Q)$ and integrate over our space-time cylinder $Q$ we then have 
 \begin{align*}
     \rho c_p \int_0^T\int_{\Omega}\frac{\partial \theta_{k'}}{\partial t}\phi \dxdt + k \int_0^T \int_{\Omega}\nabla \theta_{k'} \cdot \nabla \phi \dxdt \\ + \int_0^T \bigg (\int_{\Gamma_1}\theta_{k'}\phi \ds \bigg )u_{k'}(t) \dt =
     \int_0^T \bigg (\int_{\Gamma_1}\theta_w\phi \ds \bigg ) u_{k'} \dt 
 \end{align*}
-We want to see what happens if we pass to the limit $k' \rightarrow \infty$ in the equation. Due to the continuity of the solution $\theta_{k'}$ we can pass to the limit and all terms converge. The solution to the state system is unique therefore setting
+We want to see what happens if we pass to the limit $k' \rightarrow \infty$ in the equation. Due to the continuity of the solution $\theta_{k'}$ we can pass to the limit and all terms converge due to their linearity in $\theta_{k'}$. The solution to the state system is unique therefore setting
 \begin{align*}
     \theta(\bar{u}) = \bar{\theta} 
 \end{align*}
-Now due to the lower semicontinuity of our function J we have that 
+Now due to the lower semicontinuity of our functional J we have that 
 \begin{align*}
     J(\bar{\theta}, \bar{u}) \leq \lim \inf_{k'} J(\theta_{k'}, u_{k'})
 \end{align*}

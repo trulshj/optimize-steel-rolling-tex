@@ -48,7 +48,7 @@ and
 \end{subequations}
 We have defined $Q \coloneqq \Omega \times (0, T)$. Here $\gamma \geq 0$ is a penalizing parameter called Tikhonov regularization parameter, and the last term in $J(\theta, u)$ is a regularizing term which penalize high costs of the control.
 
-In this report we shall first develop first-order optimality conditions for \eqref{eq:heat}, then in Section 3 we prove existence of an optimal control, then we consider two black-box methods; The projected Gradient and Newton's method with primal-dual active set strategy, and finally we consider their performance on a test problem and on the actual problem we are solving. 
+In this report we shall first develop first-order optimality conditions for \eqref{eq:heat}, then in Section 3 we prove existence of an optimal control, then we consider two gradient-based optimisation methods; The projected Gradient and Newton's method with primal-dual active set strategy, then we consider their performance on a test problem and on a more realistic situation used in the industry, finally we discuss some further improvements to the model used here. 
 
 \section{Main part}
 \input{sections/adjoint-equation}

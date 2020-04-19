@@ -79,7 +79,7 @@ For the FEniCS implementation we let the left hand side and the right hand side 
 \begin{equation*}
     a_A(p, v) = L_A(v; p^{n+1}).
 \end{equation*}
-For the implementation we initialise $p^{T/\Delta t}$ using the end time conditions in the adjoint system \eqref{eq:adjoint-system}, and then solve the system above at each time step, backwards in time.m
+For the implementation we initialise $p^{T/\Delta t}$ using the end time conditions in the adjoint system \eqref{eq:adjoint-system}, and then solve the system above at each time step, backwards in time.
 
 
 \subsection{Projected Gradient Descent}
@@ -106,7 +106,7 @@ We stick with Armijo rule as our line search strategy. This method consists of g
 \begin{equation}\label{eq:armijo}
     F (u_k + \alpha_kd_k) - F(u_k) \leq \mu \alpha_k \langle \nabla F(u_k),d_k \rangle_{U}
 \end{equation}
-where $\mu,\beta  \in (0,1)$ are chosen constant, that is we use backtracking to determine the stepsize \cite{iterativeMethods}. We set $\mu = 10^{-3}$ and $\beta = \frac{1}{2}$. More facts about Armijo rule and the convergence properties of this line search strategy is in \cite{numMethods} \cite{iterativeMethods}. However we have control-constraints, so we need to ensure the argument is placed inside the admissable set of controls $U_{ad}$, in particular we have box constraints given in \eqref{eq:box_constraints}, that is we have a lower bound $u_a$ and upper bound $u_b$ for the control variable. Therefore we need to use a projection onto the set of admissable controls, that is why it is called the projected gradient descent method. We introduce a cut-off function i.e. a projection given by
+where $\mu,\beta  \in (0,1)$ are chosen constant, that is we use backtracking to determine the stepsize \cite{iterativeMethods}. We set $\mu = 10^{-4}$ and $\beta = \frac{1}{2}$. More facts about Armijo rule and the convergence properties of this line search strategy is in \cite{numMethods} \cite{iterativeMethods}. However we have control-constraints, so we need to ensure the argument is placed inside the admissable set of controls $U_{ad}$, in particular we have box constraints given in \eqref{eq:box_constraints}, that is we have a lower bound $u_a$ and upper bound $u_b$ for the control variable. Therefore we need to use a projection onto the set of admissable controls, that is why it is called the projected gradient descent method. We introduce a cut-off function i.e. a projection given by
 \begin{equation}
     \label{eq:projection}
     \mathbb{P}_{[u_a,u_b]}(v) := \max \{u_a, \min \{u_b,v \} \}
@@ -118,7 +118,7 @@ this should hold componentwise, if one allow $u_a$ and $u_b$ to be vectors, nota
 A pseudocode for the whole Projected Gradient Descent method is shown in Algorithm 1. We introduce two stopping criterion's, one based on the minimum allowed step length, and one on the difference in the computed values of the control given by 
 \begin{equation}
     \label{eq:stopping}
-    \tau := ||u^{(k+1)} - u^{(k)}||_U 
+    \tau := \|u^{(k+1)} - u^{(k)}\|_U 
 \end{equation}
 This is to check that the controls converge towards a value, $U$ is the space of the controls. We therefore want to consider an optimization algorithm which is based on a quadratic approximation. 
 
@@ -146,7 +146,7 @@ This is the projected descent algorithm which we will apply to our control probl
     \nabla F(u) =  \gamma u - \frac{1}{\rho c_p} \int_{\Gamma_1} (\theta - \theta_w)p \ds = 0
 \end{equation*}
 
-The projected gradient descent method is globally convergent if the reduced cost functional F is Fréchet differentiable and bounded from below. As the solution to the state system $S(u) \in W(0,T) \cap C(\bar{Q})$, $F$ is indeed Fréchet differentiable. Moreover we have that $F(u) \geq 0$ for all choices of controls $u \in U_{ad}$ by the definition of $F(u)$ therefore we have global convergence. However this is a first-order descent method, and the convergence rate is typically very slow, since it solely rely on first-order gradient information. We expect to see pretty fast convergence when the control approximated thus far $u_k$ is far from the optimal, and the convergence gets slower and slower once we get closer to the optimal $\bar{u}$.
+The projected gradient descent method is globally convergent if the reduced cost functional F is Fréchet differentiable and bounded from below. As the solution to the state system $S(u) \in W(0,T) \cap C(\bar{Q})$, $F$ is indeed Fréchet differentiable. Moreover we have that $F(u) \geq 0$ for all choices of controls $u \in U_{ad}$ by the definition of $F(u)$ therefore we have global convergence. However this is a first-order descent method, and the convergence rate is typically very slow, since it solely rely on first-order gradient information. We expect to see pretty fast convergence when the control approximated thus far $u_k$ is far from the optimal, and the convergence gets slower and slower once we get closer to the optimal $\bar{u}$. \bigskip
 
 This behaviour is confirmed by the results shown in figure \ref{fig:armijo}. Here, we first solved the state equation with $u(t) = 1/2$, and used the mean temperature at $t=T$ from this solution as $\theta_d$. We then ran Algorithm 1 (implemented in Python) with initial guess $u^{(0)} = 0.1$, regularisation parameter $\gamma = 1$, minimum allowable normed difference between iterations $\id{tol} = 10^{-10}$ and minimum allowable step length $\alpha_{\min} = 2^{-40}$.\footnote{The values for $\id{tol}$ and $\alpha_{\min}$ are perhaps too small, and could be increased to speed up the algorithm.} The Armijo parameter from \eqref{eq:armijo} was set to $\mu=10^{-4}$. This algorithm reached a value for the control of $0.4903$ after 2 steps, an absolute relative difference of less than 2\% with respect to the correct value of $0.5$. After 9 steps the step length became unacceptably short, and the algorithm terminated with a final value of $u=0.5038$, about 0.8\% away from the correct answer. A complete summary of the values computed by the algorithm are shown in table \ref{table:armijo}. 
 \begin{figure}[pb]
