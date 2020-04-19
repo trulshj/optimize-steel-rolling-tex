@@ -148,7 +148,7 @@ This is the projected descent algorithm which we will apply to our control probl
 
 The projected gradient descent method is globally convergent if the reduced cost functional F is Fréchet differentiable and bounded from below. As the solution to the state system $S(u) \in W(0,T) \cap C(\bar{Q})$, $F$ is indeed Fréchet differentiable. Moreover we have that $F(u) \geq 0$ for all choices of controls $u \in U_{ad}$ by the definition of $F(u)$ therefore we have global convergence. However this is a first-order descent method, and the convergence rate is typically very slow, since it solely rely on first-order gradient information. We expect to see pretty fast convergence when the control approximated thus far $u_k$ is far from the optimal, and the convergence gets slower and slower once we get closer to the optimal $\bar{u}$. \bigskip
 
-This behaviour is confirmed by the results shown in figure \ref{fig:armijo}. Here, we first solved the state equation with $u(t) = 1/2$, and used the mean temperature at $t=T$ from this solution as $\theta_d$. We then ran Algorithm 1 (implemented in Python) with initial guess $u^{(0)} = 0.1$, regularisation parameter $\gamma = 1$, minimum allowable normed difference between iterations $\id{tol} = 10^{-10}$ and minimum allowable step length $\alpha_{\min} = 2^{-40}$.\footnote{The values for $\id{tol}$ and $\alpha_{\min}$ are perhaps too small, and could be increased to speed up the algorithm.} The Armijo parameter from \eqref{eq:armijo} was set to $\mu=10^{-4}$. This algorithm reached a value for the control of $0.4903$ after 2 steps, an absolute relative difference of less than 2\% with respect to the correct value of $0.5$. After 9 steps the step length became unacceptably short, and the algorithm terminated with a final value of $u=0.5038$, about 0.8\% away from the correct answer, reflecting the fact that the convergence rate is much faster in the initial phase of the algorithm, then it become slower and slower the closer the approximation gets to the solution. 
+This behaviour is confirmed by the results shown in figure \ref{fig:armijo}. Here, we first solved the state equation with $u(t) = 1/2$, and used the mean temperature at $t=T$ from this solution as $\theta_d$. We then ran Algorithm 1 (implemented in Python) with initial guess $u^{(0)} = 0.1$, regularisation parameter $\gamma = 1$, minimum allowable normed difference between iterations $\id{tol} = 10^{-10}$ and minimum allowable step length $\alpha_{\min} = 2^{-40}$.\footnote{The values for $\id{tol}$ and $\alpha_{\min}$ are perhaps too small, and could be increased to speed up the algorithm.} The Armijo parameter from \eqref{eq:armijo} was set to $\mu=10^{-4}$. This algorithm reached a value for the control of $0.4903$ after 2 steps, an absolute relative difference of less than 2\% with respect to the correct value of $0.5$. After 9 steps the step length became unacceptably short, and the algorithm terminated with a final value of $u=0.5038$, about 0.8\% away from the correct answer. A complete summary of the values computed by the algorithm are shown in table \ref{table:armijo}. 
 \begin{figure}[pb]
     \centering
     \begin{subfigure}[b]{\textwidth}
@@ -164,6 +164,25 @@ This behaviour is confirmed by the results shown in figure \ref{fig:armijo}. Her
     \caption{Plots showing (a) the value of the cost-function on a $\log$-scale, and (b) the associated control determined by each step of the Gradient descent algorithm with the Armijo rule. The control used to generate the desired temperature was $u(t) = 1/2$.}
     \label{fig:armijo}
 \end{figure}
+\begin{table}
+    \centering
+    \caption{Values computed by Gradient descent with the Arimjo rule.}
+    \label{table:armijo}
+    \begin{tabular}{@{}lrSS}
+         \toprule
+    Step ($k$) & Step length ($\alpha$) & \multicolumn{1}{c}{Control ($u^{(k)}$)} & \multicolumn{1}{c}{$\tau = \|u^{(k-1)} - u^{(k)} \|_{\mathcal{U}}$} \\ \midrule
+    0 &  & 0.1 &  \\
+    1 & $2^{-13}$ & 1.0 & 6.42729 \\
+    2 & $2^{-5}$ & 0.49035 & 3.63966 \\
+    3 & $2^{-12}$ & 0.5162 & 0.18464 \\
+    4 & $2^{-12}$ & 0.49911 & 0.12203 \\
+    5 & $2^{-12}$ & 0.5073 & 0.0585 \\
+    6 & $2^{-12}$ & 0.50203 & 0.03768 \\
+    7 & $2^{-12}$ & 0.50511 & 0.02205 \\
+    8 & $2^{-12}$ & 0.50318 & 0.01384 \\
+    9 & $2^{-13}$ & 0.50376 & 0.00419 \\ \bottomrule
+    \end{tabular}
+\end{table}
 
 \subsection{Newton's method}
 Another type of direction is obtained at each direction $d_k$ if one instead use a quadratic expansion. For Newton's method we need again the reduced cost function $F$ to be Fréchet differentiable and that its Fréchet derivative is boundedly invertible $\forall u \in U_{ad}$, or at least close to the true solution $\bar{u}$. We try to approximate a solution of the equation $F(u) = 0$ by repeatedly linearizing the function and solving the linearized system
