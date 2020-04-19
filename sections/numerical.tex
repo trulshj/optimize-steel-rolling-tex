@@ -24,7 +24,6 @@ subject to
 \end{align*}
 
 We again use the formal Lagrange method to derive the adjoint system. The lagrangian takes the same form except an additional term which gives an extra contribution to the adjoint system. Taking the Frechet derivative with respect to the state of the Lagrangian we get
-
 \begin{equation}
   \begin{aligned}
   0 = \L_\theta(\theta, u, p)h = \alpha_2 \int_\Omega (\theta(x,T) - \theta_{d_2})h(x, T)\dx - \iint_Q h_t p\dxdt \\
@@ -33,9 +32,7 @@ We again use the formal Lagrange method to derive the adjoint system. The lagran
   + \alpha_1 \iint_{Q}\chi_{[c_1T,c_2T]}(\theta - \theta_{d_1})h \dxdt
   \end{aligned}
 \end{equation}
-
 Then we may use partial integration, and a similar argument as used to derive the adjoint system \eqref{eq:adjoint-system} to get the adjoint system in this case. The adjoint system is given by 
-
 \begin{subequations}
    \begin{align*} 
       \rho c_p p_t + k\Delta p + \chi_{[c_1T,c_2T]}\alpha_1(\theta - \theta_{d_1})&= 0 \quad\qquad\textrm{ in } Q  \\
@@ -44,5 +41,4 @@ Then we may use partial integration, and a similar argument as used to derive th
       \rho c_p p(x, T) &= \alpha_2(\theta(x, T) - \theta_{d_2}). \quad \textrm{ in } \Omega
    \end{align*}
 \end{subequations}
-
 Now we see that we got the additional term $\chi_{[c_1T,c_2T]}\alpha_1(\theta-\theta_{d_1})$ in the PDE, thus the adjoint state $p$ depends on the temperature distribution on the interval $[c_1T,c_2T]$. As a consequence we expect to observe a non-constant control u, as mentioned we expect a rapid decay towards $\theta_{d_1}$ then a constant $u$ until $t=c_2T$ and then again a rapid decay towards $\theta_{d_2}$. Since we only consider cooling by water, we need to require $\theta_{d_1} \geq \theta_{d_2}$.
