@@ -9,5 +9,14 @@
     \draw[->, color=blue] (\x, 1.8) -- (\x, 1);
 }
 \node[fill=white, inner sep=0] (gamma1-1) at (4, 1.7) {$\Gamma_1$};
-\draw[thick] (gamma1-1) to[out=180, in=90] (3.3, 1);
+\node[fill=white, inner sep=0] (gamma2-1) at (5.7, 0.7) {$\Gamma_2$};
+\draw[ultra thick, color=white] (gamma1-1) to [bend right=30] (3.3, 1);
+\draw[thick] (gamma1-1) to [bend right=30] (3.3, 1);
+\draw[thick] (gamma2-1) to [bend left=20] (5, 0.2);
+\fill[black!10] (0, 0) rectangle (5, 1);
+\draw (0, 0) -- (5, 0);
+\draw (0, 1) -- (5, 1);
+\draw[dashed] (0, 0) -- (0, 1);
+\draw[dashed] (5, 0) -- (5, 1);
+\node (domain) at (2.5, .5) {$\Omega$};
 \end{tikzpicture}
