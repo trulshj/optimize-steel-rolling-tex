@@ -55,10 +55,11 @@ Want to prove that there exist a unique weak solution $p \in H^{1,0}(Q)$ to our 
 if we assume bounded and measurable coefficent functions i.e. $c_0$ and $\alpha$, furtherore $a_Q \in L^2(Q)$, $a_{\Sigma} \in L^2(\Sigma)$ and $a_{\Omega} \in L^2(\Omega)$ then if we multiply by a test function and integrate, we can introduce a bilinear form
 \begin{equation}
     \label{eq:parabolic_adj}
-    A(y,v)(t) := \int_{\Omega}(\nabla y \cdot \nabla v + c_0(.,t)yv) \dx + \int_{\Gamma}\alpha(.,t)yv \ds
+    A(y,v)(t) := \int_{\Omega}(\nabla y \cdot \nabla v + c_0(\cdot,t)yv) \dx + \int_{\Gamma}\alpha(\cdot,t)yv \ds
 \end{equation}
 Then we have a well-posedness result for this PDE
-\begin{lemma}[well-posedness]
+
+\begin{lemma}[Well-posedness]
 The parabolic adjoint system given in \eqref{eq:parabolic_adj} has a unique weak solution $p \in H^{1,0}(Q)$ which is a solution to the variational problem 
 \begin{equation*}
     \iint_Q pv_t \dxdt + \int_0^TA(p,v)(t)\dt = \int_{\Omega}a_{\Omega}v(T) \dt + \iint_Q a_Qv \dxdt + \iint_{\Sigma}a_{\Sigma}v \dsdt
@@ -86,7 +87,7 @@ Considering the weak formulation, it now corresponds to the forward parabolic in
 \end{align*}
 Now by the previous existence and uniqueness theorem this problem admits a unique weak solution $\hat{p}$ belonging to $W(0,T)$. Reversing the time transformation we have proven uniqueness and existence for the adjoint system
 \end{proof}
-Now this system is more general than ours, so we can reduce it to our case. Consider \eqref{eq:adjoint-eqn}, if we set $c_0 = 0$, $a_Q = 0$ and split up the boundary $\Sigma = \Sigma_1 \cup \Sigma_2$ where we set $alpha_1 = \frac{u(t)}{k}$ and $\alpha_2 = 0$, $a_{\Sigma_i}=0$ for $i\in \{1,2 \}$ and finally set $a_{\Omega} = \theta|_{t=T}-\theta_d$ we have reduced to the case of the lemma, consequentely we have existence and uniqueness for \eqref{eq:adjoint-eqn}.
+Now this system is more general than ours, so we can reduce it to our case. Consider \eqref{eq:adjoint-eqn}, if we set $c_0 = 0$, $a_Q = 0$ and split up the boundary $\Sigma = \Sigma_1 \cup \Sigma_2$ where we set $\alpha_1 = \frac{u(t)}{k}$ and $\alpha_2 = 0$, $a_{\Sigma_i}=0$ for $i\in \{1,2 \}$ and finally set $a_{\Omega} = \theta|_{t=T}-\theta_d$ we have reduced to the case of the lemma, consequentely we have existence and uniqueness for \eqref{eq:adjoint-eqn}.
 
 
 

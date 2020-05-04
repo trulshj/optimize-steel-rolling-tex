@@ -43,7 +43,7 @@ Now after inserting for the boundary conditions defined in \eqref{eq:heat}, we e
   \iint_Q \theta_t\psi\dxdt + \frac{k}{\rho c_p}\iint_Q\nabla\theta \cdot \nabla\psi\dxdt + \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)(\theta - \theta_w)\psi\dsdt = 0\\
   \theta|_{t=0} = \theta_0
 \end{align}
-where $\Sigma_i = \Gamma_i\times(0,T)$. We view $\theta_t$ as being in the space $ L^(0,T;H^1(\Omega)^{*})$. Due to the isolation Neumann condition at $\Sigma_2$ all these boundary terms vanishes. Now one can use a density argument to lessen the requirement on the test function such that one only require that $v \in W(0,T)$ which is introduced below. In fact this weak formulation is even valid for $v \in L^2(0,T,H^1(\Omega))$. 
+where $\Sigma_i = \Gamma_i\times(0,T)$. We view $\theta_t$ as being in the space $ L^2(0,T;H^1(\Omega)^{*})$. Due to the isolation Neumann condition at $\Sigma_2$ all these boundary terms vanishes. Now one can use a density argument to lessen the requirement on the test function such that one only require that $v \in W(0,T)$ which is introduced below. In fact this weak formulation is even valid for $v \in L^2(0,T,H^1(\Omega))$. 
 
 From the weak formulation of the problem, we can easily set up the Lagrangian function, by subtracting the weak formulation of the problem \eqref{eq:weak-form} from the cost functional \eqref{eq:cost-func}. The test function is replaced with a Lagrange multiplier function $p$. This gives
 \begin{equation}
@@ -134,7 +134,7 @@ The gradient of the reduced cost funtional $F(u) := J(y(u),u)$ can be obtained f
     F'(u) = \L_u(y(u),u,p(u))
 \end{equation*}
 
-The space $H^1(0,T)$ is a hilbert space. By Riesz representation theorem we can identify $H$ with $H^{*}$ for any Hilbert space $H$. Therefore by identifying using an isomorphism we find that the u-derivative of the lagranginan and consequentely the gradient of our reduced cost functional is
+The space $H^1(0,T)$ is a hilbert space. By Riesz representation theorem we can identify $H$ with $H^{*}$ for any Hilbert space $H$. Therefore by identifying using an isomorphism we find that the $u$-derivative of the lagrangian and consequently the gradient of our reduced cost functional is
 
 \begin{equation*}
     F'(u) = \L_u(\theta,u,p) = \gamma u - \frac{1}{\rho c_p}\int_{\Gamma_1}(\theta - \theta_w)p \ds.
@@ -164,16 +164,16 @@ Now the optimality system of our control problem, \eqref{eq:heat} consists of th
       \gamma u - \frac{1}{\rho c_p} \int_{\Gamma_1} (\theta - \theta_w)p \ds \geq 0
 \end{equation*}
 
-This system is a first order necessary optimality condition. That is if $\bar{u} \in U_{ad}$ is an optimal control to our optimal control problem and $\bar{\theta} = S(\bar{u})$ is the associated solution to the state system. Then $\exists$ an adjoint state $\bar{p}$ such that the adjoin system is satisfied, and the variational inequality is satisfied. 
+This system is a first order necessary optimality condition. That is if $\bar{u} \in U_{ad}$ is an optimal control to our optimal control problem and $\bar{\theta} = S(\bar{u})$ is the associated solution to the state system. Then there exists an adjoint state $\bar{p}$ such that the adjoint system is satisfied, and the variational inequality is satisfied. 
 
-Now one can restate this optimalilty system using the projection formula if one assume box-constraints. That is if we assume
+Now one can restate this optimalilty system using the projection formula if one assume box-constraints. That is, if we assume
 
 \begin{equation}
     \label{eq:box_constraints}
-    U_{ad} := \{ u \in L^2(\Sigma_1): u_a(x,t) \leq u(x,t) \leq u_b(x,t) \text{ for a.e. } (x,t) \in \Sigma_1 \}
+    U_{\mathrm{ad}} := \{ u \in L^2(\Sigma_1): u_a(x,t) \leq u(x,t) \leq u_b(x,t) \text{ for a.e. } (x,t) \in \Sigma_1 \},
 \end{equation}
-Then a control $\bar{u} \in U_{ad}$ and the associated state $\bar{y}$ is optimal if and only if it satisfy togheter with the adjoint state $p$ solving \eqref{eq:adjoint-eqn}  and $\gamma >0$ i.e. the regularizaing parameter is positive that
+then a control $\bar{u} \in U_{\mathrm{ad}}$ and the associated state $\bar{\theta}$ is optimal if and only if it satisfy together with the adjoint state $p$ solving \eqref{eq:adjoint-eqn}  and $\gamma >0$ i.e. the regularisation parameter is positive that
 %\begin{equation}
 %    \label{eq:Proj_formula}
-%    \bar{u(x,t)} = \mathbb{P}_{[u_a(x,t),u_b(x,t)]} \{\frac{1}{\gamma}\theta_w(x,t)p(x,t) \}
+%    \bar{u(x,t)} = \mathbb{P}_{[u_a(x,t), u_b(x,t)]} \{\frac{1}{\gamma}\theta_w(x,t)p(x,t) \}
 %\end{equation}

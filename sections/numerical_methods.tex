@@ -29,21 +29,21 @@ For solving the state equation system \eqref{eq:heat} we discretise $\theta$ in 
 \end{equation*}
 This is inserted into the equation \eqref{eq:heat-in-omega}. $\theta^{n+1}$ is the unknown, so we set this to just $\theta$. This gives
 \begin{equation*}
-    \theta - \Delta t\frac{k}{\rho c_p}\Delta \theta = \theta^n.
+    \theta - \bar{\alpha}\Delta \theta = \theta^n, \quad\textrm{where}\quad \bar{\alpha} = \alpha\Delta t,
 \end{equation*}
-We now multiply with a test function $v\in H^1(\Omega)$, and integrate over the domain, and get
+and $\alpha$ is the thermal diffusivity defined earlier as $\alpha = \frac{k}{\rho c_p}$. We now multiply with a test function $v\in H^1(\Omega)$, and integrate over the domain, and get
 \begin{equation*}
-    \int_\Omega \theta v \dx - \Delta t\frac{k}{\rho c_p}\int_\Omega \Delta\theta\dx = \int_\Omega \theta^n v\dx.
+    \int_\Omega \theta v \dx - \bar{\alpha}\int_\Omega \Delta\theta\dx = \int_\Omega \theta^n v\dx.
 \end{equation*}
 For the implementation it is convenient to combine the two Neumann boundary conditions \eqref{eq:state-system-bd-1} and \eqref{eq:state-system-bd-2} into the following expression
 \begin{equation*}
-    -k\frac{\partial \theta}{\partial n} = \alpha(x)u(t)(\theta - \theta_w) \quad\text{where}\quad \alpha(x) = [x\in\Gamma_1],
+    -k\frac{\partial \theta}{\partial n} = \beta(x)u(t)(\theta - \theta_w) \quad\text{where}\quad \beta(x) = [x\in\Gamma_1],
 \end{equation*}
-where we have used the Iverson bracket in the definition of $\alpha$. Partial integration then lead to the weak form
+where we have used the Iverson bracket in the definition of $\beta$. Partial integration then lead to the weak form
 \begin{equation*}
 \begin{aligned}
-    \int_\Omega \theta v\dx + \Delta t\frac{k}{\rho c_p}\int_\Omega\nabla\theta\nabla v\dx &+ \frac{\Delta t}{\rho c_p}\int_{\partial\Omega}\alpha(x)u(t)\theta v\ds \\
-    &= \int_\Omega\theta^n v\dx + \frac{\Delta t}{\rho c_p}\int_{\partial\Omega}\alpha(x)u(t)\theta_w v\ds.
+    \int_\Omega \theta v\dx + \bar{\alpha}\int_\Omega\nabla\theta\nabla v\dx &+ \frac{\bar{\alpha}}{k}\int_{\partial\Omega}\beta(x)u(t)\theta v\ds \\
+    &= \int_\Omega\theta^n v\dx + \frac{\bar{\alpha}}{k}\int_{\partial\Omega}\beta(x)u(t)\theta_w v\ds.
 \end{aligned}
 \end{equation*}
 The left hand side, and the left hand side of the weak form above, is a bilinear map, and a linear functional respectively, so we write
@@ -61,7 +61,7 @@ The adjoint system \eqref{eq:adjoint-system} is solved backwards in time. For th
 \end{equation*}
 Since the equation is solved backwards in time, $p^n$ is here the unknown, so we set $p=p^n$, and insert into the adjoint system \eqref{eq:adjoint-system-eqn}. We then get
 \begin{equation*}
-    p - \Delta t\frac{k}{\rho c_p}\Delta p =  p^{n+1}, 
+    p - \bar{\alpha}\Delta p =  p^{n+1}, 
 \end{equation*}
 % Now multiply with a test function $v\in H^1(\Omega)$ and integrate over the spatial domain to get
 % \begin{equation*}
@@ -69,11 +69,11 @@ Since the equation is solved backwards in time, $p^n$ is here the unknown, so we
 % \end{equation*}
 Again we combine the two Neumann boundary conditions \eqref{eq:adjoint-system-bd-1} and \eqref{eq:adjoint-system-bd-2} into one expression:
 \begin{equation*}
-    -k\frac{\partial p}{\partial n} = \alpha(x)u(t)p,
+    -k\frac{\partial p}{\partial n} = \beta(x)u(t)p,
 \end{equation*}
-where $\alpha$ is as defined above. Now we again multiply with a test function $v\in H^1(\Omega)$ and integrate over the spatial domain. Then partial integragion then leads us to the weak form
+where $\beta$ is as defined above. Now we again multiply with a test function $v\in H^1(\Omega)$ and integrate over the spatial domain. The partial integration then leads us to the weak form
 \begin{equation*}
-    \int_\Omega pv\dx + \Delta t\frac{k}{\rho c_p} \int_\Omega \nabla p \nabla v \dx + \frac{\Delta t}{\rho c_p}\int_{\partial\Omega} \alpha(x)u(t)pv \ds  = \int_\Omega p^{n+1}v\dx.
+    \int_\Omega pv\dx + \bar{\alpha} \int_\Omega \nabla p \nabla v \dx + \frac{\bar{\alpha}}{k}\int_{\partial\Omega} \beta(x)u(t)pv \ds  = \int_\Omega p^{n+1}v\dx.
 \end{equation*}
 For the FEniCS implementation we let the left hand side and the right hand side be the bilinear, and linar form respectively, and we thus write
 \begin{equation*}
@@ -106,7 +106,7 @@ We stick with Armijo rule as our line search strategy. This method consists of g
 \begin{equation}\label{eq:armijo}
     F (u_k + \alpha_kd_k) - F(u_k) \leq \mu \alpha_k \langle \nabla F(u_k),d_k \rangle_{U}
 \end{equation}
-where $\mu,\beta  \in (0,1)$ are chosen constant, that is we use backtracking to determine the stepsize \cite{iterativeMethods}. We set $\mu = 10^{-4}$ and $\beta = \frac{1}{2}$. More facts about Armijo rule and the convergence properties of this line search strategy is in \cite{numMethods} \cite{iterativeMethods}. However we have control-constraints, so we need to ensure the argument is placed inside the admissable set of controls $U_{ad}$, in particular we have box constraints given in \eqref{eq:box_constraints}, that is we have a lower bound $u_a$ and upper bound $u_b$ for the control variable. Therefore we need to use a projection onto the set of admissable controls, that is why it is called the projected gradient descent method. We introduce a cut-off function i.e. a projection given by
+where $\mu,\beta  \in (0,1)$ are chosen constant, that is we use backtracking to determine the stepsize \cite{iterativeMethods}. We set $\mu = 10^{-4}$ and $\beta = \frac{1}{2}$. More facts about Armijo rule and the convergence properties of this line search strategy is in \cite{numMethods} \cite{iterativeMethods}. However we have control-constraints, so we need to ensure the argument is placed inside the admissable set of controls $U_{\textrm{ad}}$, in particular we have box constraints given in \eqref{eq:box_constraints}, that is we have a lower bound $u_a$ and upper bound $u_b$ for the control variable. Therefore we need to use a projection onto the set of admissable controls, that is why it is called the projected gradient descent method. We introduce a cut-off function i.e. a projection given by
 \begin{equation}
     \label{eq:projection}
     \mathbb{P}_{[u_a,u_b]}(v) := \max \{u_a, \min \{u_b,v \} \}

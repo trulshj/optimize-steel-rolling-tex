@@ -20,9 +20,9 @@ Here $\alpha = \frac{k}{\rho c_p}$ is the Thermal diffusivity. Now this is a sim
     \end{tabular}
     \label{tab:chosenParam}
 \end{table}
-Here $\theta_0$ represent the initial temperature of the steel slab shown in \ref{fig:steel_slab}, while $\theta_w$ is the temperature of the applied coolant. To have a realistic size of the slab one might choose $\Omega = (0,7.5)\times(0,0.7) \text{cm}^2$
+Here $\theta_0$ represent the initial temperature of the steel slab shown in \ref{fig:steel_slab}, while $\theta_w$ is the temperature of the applied coolant. To have a realistic size of the slab one might choose $\Omega = (0,7.5)\times(0,0.7) \text{cm}^2$.
 
-To test our solution procedure of the state system, we use the parameters of Table \ref{tab:chosenParam} togheter with various choices of $u$. We then verify that the solutions behave as expected. One such example is shown in \ref{fig:state_simulations}. The simulations were produced using a finite element method (FEM) as implemented in the Python package \verb|FEniCS|~\cite{fenics}. For the first choice we sat $u(t) = 1$ we observe that in Figure \ref{fig:state_simulations_a} the temperature is steadily decreasing, as one would expect when continously applying a coolant to the steel. Other runs with different choices of $u$ also behaved as one would expect. Thus, we conclude that the parameters we have chosen are reasonable, and that the model and the simulation of the state system both perform well.
+To test our solution procedure of the state system, we use the parameters of Table \ref{tab:chosenParam} togheter with various choices of $u$. We then verify that the solutions behave as expected. One such example is shown in Figure \ref{fig:state_simulations}. The simulations were produced using a finite element method (FEM) as implemented in the Python package \verb|FEniCS|~\cite{fenics}. For the first choice we sat $u(t) = 1$ we observe that in Figure \ref{fig:state_simulations_a} the temperature is steadily decreasing, as one would expect when continously applying a coolant to the steel. Other runs with different choices of $u$ also behaved as one would expect. Thus, we conclude that the parameters we have chosen are reasonable, and that the model and the simulation of the state system both perform well.
 \begin{figure}
     \makebox[\linewidth]{
         \centering
