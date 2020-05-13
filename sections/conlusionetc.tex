@@ -1,25 +1,27 @@
 
 \subsection{Further improvements to the model}
-The model can take even more physical situations into consideration as in \cite{DPSteelOverview} by coupling the  heat equation with an ordinary differential equation that describe the evolution of steel microstructure during the cooling process. Then one consider the optimal control problem for the controlled cooling of steel profiles in order to obtain a desired temperature and a phase distribution in the steel, thus one get two control variables. Such a phase transformation in the steel microstructure can in general be described by an initial value problem of the form 
+The model can take even more physical situations into consideration by coupling the  heat equation with an ordinary differential equation that describe the evolution of steel microstructure during the cooling process, as in \cite{DPSteelOverview}. Here, the optimal control problem for the controlled cooling of steel profiles in order to obtain a desired temperature, as well as a desirable phase distribution in the steel, is considered. This leads to two control variables: One regarding the cooling of the steel, as we have already seen; one regarding the composition of the steel.
+
+A phase transformation in the steel microstructure can in general be described by an initial value problem of the form 
 \begin{align*}
     \frac{\partial f}{\partial t} = G(f,\theta ) \\
     f_{t=0} = 0
 \end{align*}
-Here f is a volume fraction of the new phase, G is typically a nonlinear function of its arguments, so the phase-development depends on temperature and the volume fraction of the phase already present. One start with zero of the given phase. 
+Here $f$ is a volume fraction of the new phase, and $G$ is typically a nonlinear function of its arguments. The phase-development depends on the temperature and the volume fraction of the phase already present. One start with zero of the given phase. 
 
-Then one can modify the heat equation to include a right-hand side term $\rho L \frac{\partial f}{\partial t}$, where $L$ is latent heat, that is a quantity describing the release of heat due to the phase transformation. One can also vary the coolant profile, that is applied different amount of water to the different parts of the steel slab, this can be given by a function $\beta (x)$. The parabolic PDE for the temperature evolution then become 
+Then one can modify the heat equation to include a right-hand side term $\rho L \frac{\partial f}{\partial t}$, where $L$ is latent heat, i.e. a quantity describing the release of heat due to the phase transformation. One can also vary the coolant profile, that is applied different amount of water to the different parts of the steel slab; this can modelled through varying $\beta (x)$. The parabolic PDE for the temperature evolution then becomes
 \begin{align*}
     \rho c_p \theta_t - \nabla \cdot (k\nabla \theta) = \rho L f_t \quad \textrm{ in } Q \\
     - k \frac{\partial \theta}{\partial n} = u(t)\beta(x) \bigg (\theta - \theta_w \bigg ) \quad \textrm{ on } \Sigma_1 \\
     -k \frac{\partial \theta}{\partial n} = 0 \quad \textrm{ on } \Sigma_2 \\
     \theta(x,0) = \theta_0(x) \quad \textrm{ in } \Omega
 \end{align*}
-Here we still operate with isolation on the boundary $\Sigma_2$. We now also want to obtain desired phase distribution at the end of the cooling process, denoted $f_d(x)$. This can be modelled mathematically by including an extra quadratic tracking term of the phase distribution into the cost functional. The resulting cost functional then become
-
+We still operate with isolation on the boundary $\Sigma_2$. We now also want to obtain desired phase distribution at the end of the cooling process, denoted $f_d(x)$. This can be modelled mathematically by including an extra quadratic tracking term of the phase distribution into the cost functional. The resulting cost functional then becomes
+%
 \begin{equation*}
 \begin{aligned}
         J(\theta, f, u) := \frac{\alpha_1}{2}\int_{\Omega}(f(x,T)-f_d(x))^2\dx + \frac{\alpha_2}{2}\int_{\Omega}(\theta(x,T) - \theta_d(x))^2\dx \\ + \frac{\alpha_3}{2}\int_0^Tu(t)^2 \dt
 \end{aligned}
 \end{equation*}
-
-Choosing the appropriate function $G(f,\theta)$ depends on the particular phase-transformation one consider, and $L$ also depends upon the chosen phase-transformation. The coolant profile $\beta(x)$ must also be chosen. Furthermore one need to choose the desired temperature profile $\theta_d(x)$ and the desired volume-fraction profile for the microstructure $f_d(x)$. All these depending on the particular application, this mathematical model is used in the industry. 
+%
+Choosing the appropriate function $G(f,\theta)$ depends on the particular phase-transformation being considered. The latent heat $L$ also depends upon the chosen phase-transformation. The appropriate coolant profile $\beta(x)$ must also be chosen. Further, one need to choose the desired temperature profile $\theta_d(x)$ and the desired volume-fraction profile for the microstructure $f_d(x)$. All these depend upon the particular application. This extended model is the one used in some parts of industry.
