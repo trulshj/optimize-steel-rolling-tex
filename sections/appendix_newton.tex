@@ -1,1 +1,101 @@
-\section{Newton's Method}
+\clearpage
+
+\section{Newton's Method}\label{Appendix}
+Newton's method is a descent method based on the quadratic expansion of the reduced cost functional $F$. We require $F$ to be Fréchet differentiable, with the Fréchet derivative is boundedly invertible for all $u \in U_{ad}$, or at in a neighbourhood around the true solution $\bar{u}$. The idea is to approximate the solution to $F(u) = 0$ by repeatedly linearizing the function and solving the linearized system
+\begin{align}
+    \label{eq:Newton}
+    u_{k+1} = u_k - F'(u_k)^{-1}F(u_k).
+\end{align}
+The control constraints can be handled with an primal-dual active set strategy. In the unconstrained case, a necessary optimality condition for the reduced control problem is that $\nabla F(u)$ vanishes. In the presence of control constraints, this condition must be replaced by the variational inequality
+\begin{equation}
+    \langle \nabla F(\bar{u}),\, (v-\bar{u}) \rangle \geq 0 \ \forall v \in U_{ad}
+\end{equation}
+We can reformulate this using Lagrange multipliers, requiring 
+\begin{equation*}
+    \nabla F(u) + \mu_b - \mu_a =0 
+\end{equation*}
+to get the complementary slackness conditions which are given by the following equations:
+\begin{subequations}
+    \label{eq:complementary}
+\begin{align}
+    \mu_a \geq 0, \quad u_a - u \leq 0, \quad \mu_a(u_a - u) = 0, \\
+    \mu_b \geq 0, \quad u - u_b \leq 0, \quad \mu_b(u-u_b) =0.
+\end{align}
+\end{subequations}
+To treat \eqref{eq:complementary} numerically, the two expressions are combined into one equation by introducing a new Lagrange multiplier $\mu = \mu_b - \mu_a$. We may then write
+\begin{align}
+    \label{eq:finalComp}
+    \nabla F(u) + \mu = 0, \\
+    \max \{0, \mu + c(u-u_b) \} + \min \{0, \mu + c(u-u_b) \} - \mu = 0.
+\end{align}
+%
+The latter equation is just a reformulation of \eqref{eq:complementary}.
+
+Newton's method is based on calculating the Hessian of the reduced cost functional, since it uses second order information about the functional. This depends on the primal variable $u$ and the dual variable $\mu$. We introduce the active and inactive sets at an iterate $(u_k, \mu_k)$ as
+\begin{align}
+    \label{eq:active_inactive}
+    A_k^{+} := \{ t \in [0,T]: \text{ } \mu_k + c(u_k - u_b) >0 \}, \\
+    A_k^{-} := \{ t \in [0,T]: \text{ } \mu_k + c(u_k - u_a) <0 \}, \\
+    I_k := [0,T] \setminus A_k, \quad A_k := A_k^{+} \cup A_k^{-}.
+\end{align}
+The Newton direction at an iterate $(u_k, \mu_k)$ can be calculated by solving the following symmetric form of the Newton system:
+\begin{equation}
+    \label{eq:Newton_system}
+    \begin{bmatrix}
+        \nabla^2 F(u_k) & \chi_{A_k} \\
+        \chi_{A_k} & 0 
+    \end{bmatrix}
+    \begin{bmatrix}
+    \delta u \\
+    \delta \mu|_{A_k}
+    \end{bmatrix}
+    = - \begin{bmatrix}
+    \nabla F(u_k) + \mu_k \\
+    \chi_{A_k^{+}}(u_k - u_b) + \chi_{A_k^{-}}(u_k - u_a)
+    \end{bmatrix}
+\end{equation}
+The next dual variable $\mu_{k+1}$ is set to be zero on the the inactive set $I_k$. Pseudocode for Newton's method with primal-dual active set strategy is given in Algorithm 2, with $\tau$ is calculated as in Algorithm 1.
+\begin{codebox}
+\Procname{$\proc{Algorithm2: Newton's method with Primal-Dual Active Set Strategy}$}
+\li Choose initial value $u^{(0)}$ and $\mu_0$ 
+\li Choose $tol$
+\li $k = 0$
+\li Solve state system to obtain $\theta^{(0)}$
+\li Solve adjoint system to obtain $p^{(0)}$
+\li \While $(\tau > \id{tol})$ \Then 
+\li Evaluate the reduced gradient $\nabla F(u^{(k)})$
+\li Compute the active sets $A_k^{+}$ and $A_k^{-}$
+\li \If $A_k^{+} = A_{k-1}^{+}$ and $A_{k-1}^{-} = A_k^{-}$ \Then 
+\li \Return \End
+\li Solve the Newtonian system given in \eqref{eq:Newton_system} iteratively
+\li $u^{(k+1)} = u^{(k)} + \delta u$  
+\li \If $t \in A_k$ \Then
+    \li $\mu_{k+1} = u_k + \delta u$
+    \li \Else $\mu_{k+1} = 0$ 
+    \End
+%\begin{equation*}
+%    \mu_{k+1}(t) = 
+%    \begin{cases}
+%     u_k + \delta u \text{ if } t \in A_k \\
+%     0 \qquad \text{ if } t \in I_k
+%     \end{cases}
+% \end{equation*}
+\li Solve state system to obtain $\theta^{(k+1)}$ using $u^{(k+1)}$
+\li Solve adjoint system to obtain $p^{(k+1)}$ 
+\li Compute $\tau$
+\li $k = k+1$
+\end{codebox}
+
+According to Kunisch and Rösch, numerical experiments show that algorithm is rather insensitive to the initial control $u_0$ \cite{primal_dual}. In their article, they prove that when the algorithm satisfies the stopping criteria in line 9, the final iterate $(u_n, \theta_n, p_n, \mu_n)$ satisfies the optimality system for the original optimal control problem.
+
+They also perform a convergence analysis of the algorithm. The practical behavior for some active set strategies is that the controls computed in the iterations are infeasible, except for the last iteration which is feasible. By their argument, the algorithm stops at a feasible and optimal point. The algorithm can be made more efficient, for instance by carrying out a few gradient descent steps in the starting phase, and then switching over to Newton's method. The notion used here is similar to that in \cite{Algorithms}.
+
+Compared to the simple gradient descent, Newton's method typically has superior convergence. Where gradient descent is $Q$-linear convergent, Newton's method converges superlinearly.
+The rate of convergence can be measured as in \cite{DPSteel}, setting 
+\begin{equation}
+    \label{eq:rate_of_conv}
+    e_k := \frac{\|u^{(k)}-\bar{u}\|_U + \|\theta^{(k)}-\bar{\theta}\|_{L^2(Q)} +\|p^{(k)}-\bar{p}\|_{L^2(Q)} }{\|u^{(k+1)}-\bar{u}\|_U + \|\theta^{(k+1)}-\bar{\theta}\|_{L^2(Q)} +\|p^{(k+1)}-\bar{p}\|_{L^2(Q)}}
+\end{equation}
+where $(\bar{\theta},\bar{u},\bar{p})$ is the analytical solution to the control problem. This is used as a convergence test of the two algorithms on a control problem where we can find an analytical solution. 
+
+Other possible methods to use on the optimal control problem include the sequential quadratic programming (SQP) method \cite{Algorithms}, and reduced SQP \cite{DPSteel}. 

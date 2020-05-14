@@ -28,4 +28,4 @@ Here we still operate with isolation on the boundary $\Sigma_2$. We now also wan
 Choosing the appropriate function $G(f,\theta)$ depends on the particular phase-transformation being considered, as does the value of $L$. The coolant profile $\beta(x)$ must also be chosen. Furthermore one need to choose the desired temperature profile $\theta_d(x)$ and the desired volume-fraction profile for the microstructure $f_d(x)$. All these depending on the particular application, this mathematical model is used in the industry. 
 
 \subsection{Newton's method}
- We will implement the simpler Gradient Descent method and compare it to Newton's method. The gradient descent method has an infamous slow convergence rate, compared to the super linear convergence rate of Newton's method.
+ As the gradient descent has an infamous slow convergence rate, if would be natural to implement Newton's method with a primal-dual active set strategy or try a sequential Quadratic Programming approach. The Newton's method is considered in Appendix \ref{Appendix}. 

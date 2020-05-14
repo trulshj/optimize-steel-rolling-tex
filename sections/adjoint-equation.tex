@@ -17,7 +17,7 @@ The domain $Q = \Omega \times (0,T)$, for the hot rolling of steel is shown in F
     \label{fig:steel_slab}
 \end{figure}
 
-More generally, one may consider a domain $\Omega \subset \mathbb{R}^3$ which is bounded with a Lipschitz boundary, $\partial \Omega = \Gamma_1 \cup \Gamma_2$. A suitable function space for the solution of a linear parabolic PDE is 
+More generally, one may consider a domain $\Omega \subset \mathbb{R}^3$ which is bounded with a Lipschitz boundary, $\partial \Omega = \Gamma_1 \cup \Gamma_2$ we will not do so here. A suitable function space for the solution of a linear parabolic PDE is 
 \begin{equation}
     \label{eq:funcSpace}
     W(0,T) : = \{ \theta \in L^2(0,T;H^1(\Omega)) : \quad \frac{\partial \theta}{\partial t} \in L^2(0,T;(H^1(\Omega))^{*}) \}
@@ -40,7 +40,7 @@ We follow the notion by \cite{optimalControl} and therefore the notation $L^{p}(
 We call a function vector-valued when it maps from $[a,b] \subset \mathbb{R}$ into a Banach space $X$. 
 
 \subsection{The adjoint eqution and the gradient}
-We start by finding the weak formulation for the problem defined in \eqref{eq:heat}. We multiply the equation \eqref{eq:heat-in-omega} by a test function $\psi\in H^{1,1}(Q)$, a function which has weak first-order partial derivatives in space and time. We then integrate over the domain $Q$. We assume that the heat conductivity, $k$, heat capacity $c_p$ and density $\rho$ are all constant, so that partial integration in space yields 
+We start by finding the weak formulation for the problem defined in \eqref{eq:heat}. We multiply the equation \eqref{eq:heat-in-omega} by a test function $\psi\in W_2^{1,1}(Q)$, a function which has weak first-order partial derivatives in space and time, and second order integrability. We then integrate over the domain $Q$. We assume that the heat conductivity, $k$, heat capacity $c_p$ and density $\rho$ are all constant, so that partial integration in space yields 
 \begin{equation}
 \begin{aligned}
   0 &= \iint_Q (\theta_t - \frac{k}{\rho c_p}\Delta\theta)\psi\dxdt  \\
@@ -54,8 +54,7 @@ After using the boundary conditions defined in \eqref{eq:heat}, we end up with t
   \theta|_{t=0} = \theta_0,
   \end{gathered}
 \end{equation}
-where $\Sigma_i = \Gamma_i\times(0,T)$. We view $\theta_t$ as being in the space $ L^2(0,T;H^1(\Omega)^{*})$. Not that all terms pertaining to the boundary $\Sigma_2$ vanishes from the weak form, due to the assumption that no heat flows across this boundary. Now one can use a density argument to lessen the requirement on the test function such that we only require that $v \in W(0,T)$ which is introduced below. In fact this weak formulation is even valid for $v \in L^2(0,T,H^1(\Omega))$. 
-
+where $\Sigma_i = \Gamma_i\times(0,T)$. We view $\theta_t$ as being in the space $ L^2(0,T;H^1(\Omega)^{*})$. Note that all terms pertaining to the boundary $\Sigma_2$ vanishes from the weak form, due to the assumption that no heat flows across this boundary. Now one can use a density argument to lessen the requirement on the test function such that we only require that $\psi \in W(0,T)$.
 From the weak formulation of the problem, we can easily set up the Lagrangian function, by subtracting the weak formulation of the problem \eqref{eq:weak-form} from the cost functional \eqref{eq:cost-func}. The test function is replaced with a Lagrange multiplier function $p$. This gives
 \begin{equation}
   \begin{aligned}\label{eq:lagrangian-raw}
@@ -66,7 +65,8 @@ From the weak formulation of the problem, we can easily set up the Lagrangian fu
 As we will see in Section 3, we have that our Lagrangian is a map from 
 \begin{equation*}
     \L : W(0,T)\cap C(\bar{Q}) \times L^{\infty}(0,T) \times  W(0,T) \cap C(\bar{Q}) \rightarrow \mathbb{R}
-\end{equation*}.
+\end{equation*}
+where one can identity $Y = W(0,T) \cap C(\bar{Q})$ as the state space and $U = L^{\infty}(0,T)$ as the control space. 
 
 \subsubsection{Adjoint equation}
 The adjoint equation is derived by setting the directional derivative of the Lagrangian with respect to the state variable equal to zero. Assume the direction $h\in H^1(Q)$ is such that $h(x, 0) = 0$. % Antagelsen h(x, 0) = 0 popper visst ut av seg selv hvis man gjør noe på en bestemt måte i følge Dietmar.
@@ -93,7 +93,7 @@ After some reordering of the terms we get
   \begin{aligned}
   0 = \L_\theta(\theta, u, p)h = \int_\Omega \theta(x,T) - \theta_d-p(x, T))h(x, T)\dx \\
   + \iint_Q h \left( p_t + \frac{k}{\rho c_p}\Delta p\right) \dxdt
-   - \frac{k}{\rho c_p} \iint_{\Sigma_0}\partial_\nu p\cdot h\dsdt \\
+   - \frac{k}{\rho c_p} \iint_{\Sigma_2}\partial_\nu p\cdot h\dsdt \\
    - \frac{1}{\rho c_p} \iint_{\Sigma_1}h(  k\partial_\nu p + u(t)p )\dsdt.
   \end{aligned}
 \end{equation}
@@ -103,11 +103,11 @@ Let $h\in H_0^1(Q)$, i.e. $h$ vanishes at the boundary. Then we are left with th
 \end{equation*}
 Letting $h\in H^1(Q)$ such that $h(x, T) = 0$ and $h|_{\Sigma_0}=0$ gives
 \begin{equation*}
-  -k\frac{\partial p}{\partial\nu} = u(t)p \quad\textrm{ in } \Sigma_1.
+  -k\frac{\partial p}{\partial\nu} = u(t)p \quad\textrm{ on } \Sigma_1.
 \end{equation*}
 Replacing the last condition on $h$ from above with $h|_{\Sigma_1}=0$ yields
 \begin{equation*}
-  -k\frac{\partial p}{\partial\nu} = 0 \quad\textrm{ in } \Sigma_0.
+  -k\frac{\partial p}{\partial\nu} = 0 \quad\textrm{ on } \Sigma_2.
 \end{equation*}
 Finally, let $h\in H^1(Q)$, and we find
 \begin{equation*}
@@ -117,8 +117,8 @@ This constitutes the \textit{adjoint equation}, which we restate below
 \begin{subequations}\label{eq:adjoint-system}
    \begin{align} % Approved by Dietmar!
       \rho c_p p_t + k\Delta p &= 0 \quad\qquad\textrm{ in } \Omega \times (0,T) \label{eq:adjoint-system-eqn} \\
-      {-k}\frac{\partial p}{\partial\nu} &= u(t)p \,\,\quad\textrm{ in } \Sigma_1 \label{eq:adjoint-system-bd-1} \\
-      {-k}\frac{\partial p}{\partial\nu} &= 0 \,\quad\qquad\textrm{ in } \Sigma_0 \label{eq:adjoint-system-bd-2} \\
+      {-k}\frac{\partial p}{\partial\nu} &= u(t)p \,\,\quad\textrm{ on } \Sigma_1 \label{eq:adjoint-system-bd-1} \\
+      {-k}\frac{\partial p}{\partial\nu} &= 0 \,\quad\qquad\textrm{ on } \Sigma_2 \label{eq:adjoint-system-bd-2} \\
       \rho c_p p(x, T) &= \theta(x, T) - \theta_d. \quad \textrm{ in } \Omega
    \end{align}
    \label{eq:adjoint-eqn}
