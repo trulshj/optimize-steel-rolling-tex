@@ -1,7 +1,7 @@
 \section{Existence and uniquenes for the optimal control problem}\label{proof}
 
 \subsection{Existence and uniqueness state system}
-Need to consider the existence of a soluton to the state equation. In order to do so we consider a more general linear parabolic partial differential equation, and derive existence for that PDE, and use that to conclude about the existence for our particular problem as well. Consider the PDE given by
+Need to consider the existence of a solution to the state equation. In order to do so we consider a more general linear parabolic partial differential equation, and derive existence for that PDE, and use that to conclude about the existence for our particular problem as well. Consider a general parabolic PDE with mixed boundary conditions
 
 \begin{align}
     \label{eq:moreGen}
@@ -21,7 +21,7 @@ One need some requirements on the coefficents of the matrix $A=(a_{ij})$, that i
 \end{equation*}
 Moreover from \eqref{eq:moreGen} we see that we have $\partial_{n_A}$ appearing which is the directional derivative of the conormal vector $n_{A}$ which is a vector whose component are given by $n_{A} = An$ where A is the elliptic differential operator. Then we can infer an existence and uniqueness theorem for the PDE given in \eqref{eq:moreGen}. 
 
-\begin{theorem}[Existence and uniqueness] Assume that $\Omega \subset \mathbb{R}^n$ is a bounded Lipschitz domain with boundary $\Gamma$ and let $T>0$ denote the final time. Moreover if $c_0 \in L^{\infty}(Q)$ and $\alpha \in L^{\infty}(\Sigma)$, where $\alpha(x,t) \geq 0$ for a.e. $(x,t) \in \Sigma$, $y_0 \in L^2(\Sigma), f \in L^2(Q)$ and $g \in L^2(\Sigma)$. Then the parabolic initial-value problem \eqref{eq:moreGen} has a unique weak solution in $H^{1,0}(Q)\cap L^{\infty}(0,T;L^2(\Omega))$. Moreover, there is a constant C>0 which is independent of $f$, $g$ and $u_0$ such that 
+\begin{theorem}[Existence and uniqueness] Assume that $\Omega \subset \mathbb{R}^n$ is a bounded Lipschitz domain with boundary $\Gamma$ and let $T>0$ denote the final time. Moreover if $c_0 \in L^{\infty}(Q)$ and $\alpha \in L^{\infty}(\Sigma)$, where $\alpha(x,t) \geq 0$ for a.e. $(x,t) \in \Sigma$, $y_0 \in L^2(\Sigma), f \in L^2(Q)$ and $g \in L^2(\Sigma)$. Then the parabolic initial-value problem \eqref{eq:moreGen} has a unique weak solution in $W_2^{1,0}(Q)\cap L^{\infty}(0,T;L^2(\Omega))$. Moreover, there is a constant C>0 which is independent of $f$, $g$ and $u_0$ such that 
 \begin{equation*}
     \max_{t \in [0,T]}\|u(.,t)\|_{L^2(\Omega)} + \|u\|_{W_2^{1,0}(Q)} \leq C(\|f\|_{L^2(Q)} + \|g\|_{L^2(\Sigma)} + \|u_0\|_{L^2(\Omega)})
 \end{equation*}
@@ -31,7 +31,15 @@ this holds for all $f \in L^2(Q), g \in L^2(\Sigma)$ and $u_0 \in L^2(\Omega)$
 \begin{proof}
 The proof is given by Tröllsch in \cite{optimalControl} under theorem 7.8. However we can give a rough sketch of the required steps in the proof. WOLOG one may assume that $c_0(x,t)\geq 0$ for a.e. $(x,t) \in Q$, since if that were not the case one could do the substitution $y(x,t) \rightarrow e^{\lambda t}\bar{y}(x,t)$. Then the resulting differential equation for $\bar{y}$ involves the term $(\lambda + c_0)\bar{y}$ instead of $c_0y$ as in the original PDE. Taking $\lambda >0$ large enough this will certainly be positive. 
 
-Now in order to prove the existence in the theorem one need to proceed in 4 steps, do a Galerkin approximation to the problem, estimate the sequence $\{y_n \}$ which is an approximation sequence for the states of the PDE, then one need to consider the convergence of the sequence of estimated controls $\{u_j^N\}_j$ and states $\{ y_n \}$ then finally one need to show that the limit $y_n \rightarrow y$ is indeed a weak solution to the PDE. Then finally to prove uniqueness one have to use an energy inequality together with the regularity of the solution to finish the proof.
+Now in order to prove the existence in the theorem one need to proceed in 4 steps,
+\begin{enumerate}
+    \item Do a Galerkin approximation to the problem
+    \item Estimate the sequence $\{y_n \}$ which is an approximation sequence for the states of the PDE
+    \item Consider the convergence of the sequence of estimated controls $\{u_j^N\}_j$ and states $\{ y_n \}$
+    \item Show that the limit $y_n \rightarrow y$ is indeed a weak solution to the PDE
+\end{enumerate}
+One use densness
+To prove uniqueness one have to use an energy inequality together with the regularity of the solution.
 \end{proof}
 
 
@@ -42,11 +50,18 @@ Suppose that $\theta_w \in L^{\infty}(\Sigma_1)$, $\theta_0 \in L^2(\bar{\Omega}
 \begin{equation*}
     \|\theta \|_{W(0,T)} \leq C\bigg ( \|g_1\|_{L^2(\Sigma)} + \|\theta_0\|_{L^2(\Sigma)} \bigg )
 \end{equation*}
-for a constant $C>0$ indepdentent on $(g_1, \theta_0)$. this can be reformulated as the operator $(g_1,\theta_0) \rightarrow y$ defines a continuous linear operator from $L^2(\Sigma_1)\times L^2(\Sigma)$ into $W(0,T)$, and in particular into $C([0,T];L^2(\Omega))$.  
+for a constant $C>0$ independent on $(g_1, \theta_0)$
 \end{corollary}
 
+Actually using theorem 5.5 in \cite{optimalControl} we get that our solution 
+\begin{equation*}
+    \theta \in W(0,T) \cap C (\bar{Q})
+\end{equation*}
+and as we will see the solution to the adjoint system satisfy have the same regularity using a time transformation. 
+
+
 \subsection{Existence and uniqueness Adjoint system}
-Want to prove that there exist a unique weak solution $p \in H^{1,0}(Q)$ to our adjoint system. And again doing a modification of$p$ on a nullset we get $p\in W(0,t)$. We consider the sightly more general parabolic initial-boundary value problem 
+Want to prove that there exist a unique weak solution $p \in W_2^{1,0}(Q)$ to our adjoint system, and modifying $p$ on a nullset we get $p\in W(0,t)$. We consider the sightly more general parabolic initial-boundary value problem 
 \begin{align*}
     -p_t -\nabla^2p +c_0p = a_Q \qquad \text{in } Q \\
     \partial_np + \alpha p = a_{\Sigma} \qquad \text{on } \Sigma \\
@@ -60,11 +75,11 @@ if we assume bounded and measurable coefficent functions i.e. $c_0$ and $\alpha$
 Then we have a well-posedness result for this PDE
 
 \begin{lemma}[Well-posedness]
-The parabolic adjoint system given in \eqref{eq:parabolic_adj} has a unique weak solution $p \in H^{1,0}(Q)$ which is a solution to the variational problem 
+The parabolic adjoint system given in \eqref{eq:parabolic_adj} has a unique weak solution $p \in W_2^{1,0}(Q)$ which is a solution to the variational problem 
 \begin{equation*}
     \iint_Q pv_t \dxdt + \int_0^TA(p,v)(t)\dt = \int_{\Omega}a_{\Omega}v(T) \dt + \iint_Q a_Qv \dxdt + \iint_{\Sigma}a_{\Sigma}v \dsdt
 \end{equation*}
-this should hold $\forall v \in H^{1,1}(Q)$ with $v|_{t=0} = 0$. Now if we modify p on a nullset we have $p\in W(0,T)$ and $\exists$ a constant $M>0$ that does not depend on $(a_Q,a_{\Sigma}, a_{\Omega})$ such that 
+this should hold $\forall v \in W_2^{1,1}(Q)$ with $v|_{t=0} = 0$. Now if we modify p on a nullset we have $p\in W(0,T)$ and $\exists$ a constant $M>0$ that does not depend on $(a_Q,a_{\Sigma}, a_{\Omega})$ such that 
 \begin{equation*}
     \|p\|_{W(0,T)} \leq M \bigg (\|a_Q\|_{L^2(Q)} + \|a_{\Sigma}\|_{L^2(\Sigma)} + \|a_{\Omega}\|_{L^2(\Omega)} \bigg ).
 \end{equation*}
@@ -87,12 +102,29 @@ Considering the weak formulation, it now corresponds to the forward parabolic in
 \end{align*}
 Now by the previous existence and uniqueness theorem this problem admits a unique weak solution $\hat{p}$ belonging to $W(0,T)$. Reversing the time transformation we have proven uniqueness and existence for the adjoint system
 \end{proof}
-Now this system is more general than ours, so we can reduce it to our case. Consider \eqref{eq:adjoint-eqn}, if we set $c_0 = 0$, $a_Q = 0$ and split up the boundary $\Sigma = \Sigma_1 \cup \Sigma_2$ where we set $\alpha_1 = \frac{u(t)}{k}$ and $\alpha_2 = 0$, $a_{\Sigma_i}=0$ for $i\in \{1,2 \}$ and finally set $a_{\Omega} = \theta|_{t=T}-\theta_d$ we have reduced to the case of the lemma, consequentely we have existence and uniqueness for \eqref{eq:adjoint-eqn}.
+Now this system is more general than ours, so we can reduce it to our case. Consider \eqref{eq:adjoint-eqn}, if we set $c_0 = 0$, $a_Q = 0$ and split up the boundary $\Sigma = \Sigma_1 \cup \Sigma_2$ where we set $\alpha_1 = \frac{u(t)}{k}$ and $\alpha_2 = 0$, $a_{\Sigma_i}=0$ for $i\in \{1,2 \}$ and finally set $a_{\Omega} = \theta|_{t=T}-\theta_d$ we have reduced to the case of the lemma, consequently we have existence and uniqueness for \eqref{eq:adjoint-eqn}.
 
 
 
-\subsection{Existence and uniqueness optimal control}
-Under the required conditions for a solution to \eqref{eq:heat} we can go on to prove the existence of an optimal control $\bar{u}$
+\subsection{Existence of optimal control}
+Under the required conditions for a solution to \eqref{eq:heat} we can go on to prove the existence of an optimal control $\bar{u}$. 
+
+\begin{lemma}[WLSC]
+    The cost functional given b y
+    \begin{equation*}
+         J(\theta, u) = \frac{1}{2} \int_\Omega (\theta(x, T) - \theta_d)^2 \mathop{dx} + \frac{\gamma}{2} \int_0^{T} u^2 \mathop{dt}
+    \end{equation*}
+    is weakly lower semicontinous (WLSC). 
+\end{lemma}
+
+\begin{proof}
+We can reformulate the cost functional $J(\theta, u)$ in terms of norms as 
+\begin{equation*}
+    J(\theta, u) = \frac{1}{2}\|\theta (,T) - \theta_d \|_{L^2(\Omega)} + \frac{\gamma}{2}\|u\|_{L^2(0,T)}
+\end{equation*}
+Now a norm is convex by applying the triangle inequality and continuity of the norm follows by an application of the reverse triangle inequality. This thus implies that the cost functional is weakly lower semicontinous. 
+\end{proof}
+
 \begin{theorem}[Optimal Control]
 If the assumptions in the previous theorem are satisfied, then there exist at least one solution to the optimal control problem 
 \begin{align*}
@@ -106,31 +138,39 @@ If the assumptions in the previous theorem are satisfied, then there exist at le
 \end{theorem}
 
 \begin{proof}
-We follow the same footsteps as in  \cite{DPSteel}. By the theorem about the existence of a unique solution we know there exists a state $\theta \in W(0,T) \times C([0,T];L^2(\Omega))$ that solves the state equation for every control $u \in U_{ad}$. Now $U_{ad}$ is bounded by $L^{\infty}(0,T)$ therefore the solution $\theta$ is bounded in $W(0,T)$. Now the cost functional is thus bounded hence $\exists$ a minimizing sequence $\{(\theta_k,u_k)\}_{k\in \mathbb{N}}$ such that we have 
+We follow the same footsteps as in  \cite{DPSteel}. By the existence corollary for the parabolic PDE we know that  for any $u \in U_{ad} \text{ } \exists \text{ }\theta \in W(0,T)\cap C(\bar{Q})$. The set of admissible controls $U_{ad}$ is bounded in $L^{\infty}(0,T)$ therefore the solution $\theta$ is bounded in $W(0,T) \cap C(\bar{Q})$ thus the cost functional will be bounded. We can as a consequence assume we have a minimising sequence which we represent by the tuple $\{(\theta_k,u_k)\}_{k\in \mathbb{N}}$ such that we have 
 \begin{equation*}
-    \lim_{k\rightarrow \infty}J(\theta_k,u_k) = \inf_{(\theta,u)}J(\theta,u)
+    \lim_{k\rightarrow \infty}J(\theta_k,u_k) = \inf_{(\theta,u)\in (W(0,T) \cap C(\bar{Q})\times U_{ad}}J(\theta,u)
 \end{equation*}
+where $(\theta_k,y_k) = S(u_k)$ where $S(.)$ is the solution operator which assigns the solution to the state system for a given control $u_k$.
 
-We introduce a solution operator $S(u_k):= (\theta_k, u_k)$, that is $(\theta_k,u_k)$ is a solution to the state system with respect to the control $u_k$. Now assuming box-constraints the set $U_{ad}$ is bounded, closed and convex, therefore there exist a subsequence $\{u_{k'} \}_{k'}$ of controls such that one have weak convergence towards a limit in $L^2(0,T)$ that is s.t.
+Now $U_{ad}$ is a closed linear subspace of the Banach space $L^{\infty}(0,T)$, and is therefore itself a  Banach space, furthermore $U_{ad}$ is bounded and convex, so the sequence $\{u_k\}$ will be bounded, and there exist a weakly convergent subsequence of the controls $\{u_{k'} \} \subset \{u_k \}$ and a limit $\bar{u} \in L^{\infty}(0,T)$ such that
 \begin{equation*}
     u_{k'} \rightharpoonup \bar{u} \text{ in } L^2(0,T)
 \end{equation*}
-Using our existence corollary we know there exist a solution to the state system with $u_k$ as our choice as control, we might therefore extract a new subsequence if necessary which we still index by $k'$ such that
+
+Now since $U_{ad}$ is closed and convex, $U_{ad}$ is weakly closed, therefore $\bar{u} \in U_{ad}$. \bigskip
+
+Using our existence corollary we know there exist a unique solution to the state system also with the control $\bar{u}$. Extracting a further subsequence if necessary still index by $k'$ we have that 
+
 \begin{equation*}
-    \theta_{k'} \rightharpoonup \theta \text{ in } W(0,T) \text{ and strongly in } L^2(Q)
+    \theta_{k'} \rightharpoonup \theta \text{ weakly in } W(0,T) \text{ and strongly in } L^2(Q)
 \end{equation*}
-Take a test function $\phi \in H^1(Q)$ and integrate over our space-time cylinder $Q$ we then have 
+We want to show that this limit is a solution to the weak form of our state system. We use the weak from as derived in Section 2.1 but now with $\theta_{k'}$ and $u_{k'}$ instead 
+
+Take a test function $\phi \in W(0,T)$ and integrate over our space-time cylinder $Q$ we then have 
 \begin{align*}
     \rho c_p \int_0^T\int_{\Omega}\frac{\partial \theta_{k'}}{\partial t}\phi \dxdt + k \int_0^T \int_{\Omega}\nabla \theta_{k'} \cdot \nabla \phi \dxdt \\ + \int_0^T \bigg (\int_{\Gamma_1}\theta_{k'}\phi \ds \bigg )u_{k'}(t) \dt =
     \int_0^T \bigg (\int_{\Gamma_1}\theta_w\phi \ds \bigg ) u_{k'} \dt 
 \end{align*}
-We want to see what happens if we pass to the limit $k' \rightarrow \infty$ in the equation. Due to the continuity of the solution $\theta_{k'}$ we can pass to the limit and all terms converge due to their linearity in $\theta_{k'}$. The solution to the state system is unique therefore setting
+We want to see what happens if we pass to the limit $k' \rightarrow \infty$ in the equation. All terms here are continuous in $u_{k'}$ and $\theta_{k'}$ we can therefore pass to the limit $k' \rightarrow \infty$. The solution to the state system is unique thus 
 \begin{align*}
     \theta(\bar{u}) = \bar{\theta} 
 \end{align*}
-Now due to the lower semicontinuity of our functional J we have that 
+
+Now our functional $J$ is lower semicontinous by the previous lemma therefore we have  
 \begin{align*}
-    J(\bar{\theta}, \bar{u}) \leq \lim \inf_{k'} J(\theta_{k'}, u_{k'})
+    J(\bar{\theta}, \bar{u}) \leq \lim \inf_{k'\rightarrow \infty} J(\theta_{k'}, u_{k'})
 \end{align*}
-therefore the solution is optimal. 
+therefore the solution is optimal and hence there exist at least one optimal control $\bar{u} \in U_{ad}$. 
 \end{proof}

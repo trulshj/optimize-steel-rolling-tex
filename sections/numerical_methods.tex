@@ -1,24 +1,27 @@
 
 \section{Numerical implementation}
 
-To solve our optimal control problem we will consider two gradient-based optimization methods \cite{Algorithms}, and compare their performance. We will implement the simpler Gradient Descent method and compare it to Newton's method. The gradient descent method has an infamous slow convergence rate, compared to the super linear convergence rate of Newton's method.
+To solve our optimal control problem we consider the projected gradient method. The gradient descent method has an infamous slow convergence rate, compared to other gradient-based optimisation methods like Newton's method which is introduced in the Appendix.
 
-Now since both methods are gradient-based, we need to consider the reduced optimal control problem. Let $S$ be the solution operator for our state system. That is, let $S(u):=\theta(.,T)$ so given a control $u$, $S$ transform the control into the associated final temperature distribution i.e. the solution of the state system at end time. Then we can write our cost functional on reduced form, so our objective become to minimize the reduced cost functional 
+We consider the reduced optimal control problem. Let $S$ be the solution operator for our state system. That is, let $S(u):=\theta(.,T)$ so given a control $u$, $S$ transform the control into the associated final temperature distribution i.e. the solution of the state system at end time. Then we can write our cost functional on reduced form, so our objective become to minimize the reduced cost functional 
 \begin{equation}
 \label{eq:optimization_prob}
     \min_{u \in U}F(u) := J(S(u),u) = \frac{1}{2}\int_{\Omega}(S(u) - \theta_d)^2 \dx+ \frac{\gamma}{2}\int_0^Tu(t)^2\dt
 \end{equation}
 
+%Selv om dette er smud, så trenger vi det vel ikke
+\iffalse
 The operator S is compact. Now for every $u \in L^2(\Sigma)$ the state system admits a unique solution $\theta \text{ in } L^2(0,T;H^1(\Omega)) \cap C(0,T;L^2(\Omega)$ where $\theta_t \in L^2(0,T;H^1(\Omega)^{*})$. Now due to the bound in Corollary 3.1.1 we have that for every $\delta \in (0,\frac{1}{2})$ there exist a constant $k_{\delta}$ such that 
 \begin{equation*}
-    ||S(u)||_{H^{\delta}(\Omega)} \leq k_{\delta}||u||_{L^2(\Sigma)} \text{ } \forall u \in L^2(\Sigma)
+    \|S(u)\|_{H^{\delta}(\Omega)} \leq k_{\delta}\|u\|_{L^2(\Sigma)} \text{ } \forall u \in L^2(\Sigma)
 \end{equation*}
 And $H^{\delta}$ embeds compactly into $L^2(\Omega)$ therefore S is indeed compact this argument was taken from \cite{primal_dual}. 
+\fi
 
 
 \subsection{Solution of the State- and Adjoint equations}
 
-The state equation and the adjoint equations were both solved numerically with the finite element method, using the finite element programming framework FEniCS \cite{fenics} in python.
+The state equation and the adjoint equations were both solved numerically with the finite element method, using the finite element programming framework FEniCS \cite{fenics} in Python.
 
 
 \subsubsection{State equation}
@@ -37,9 +40,10 @@ and $\alpha$ is the thermal diffusivity defined earlier as $\alpha = \frac{k}{\r
 \end{equation*}
 For the implementation it is convenient to combine the two Neumann boundary conditions \eqref{eq:state-system-bd-1} and \eqref{eq:state-system-bd-2} into the following expression
 \begin{equation*}
-    -k\frac{\partial \theta}{\partial n} = \beta(x)u(t)(\theta - \theta_w) \quad\text{where}\quad \beta(x) = [x\in\Gamma_1],
+    -k\frac{\partial \theta}{\partial n} = \beta(x)u(t)(\theta - \theta_w) \quad\text{where}\quad \beta(x) = \chi_{\Gamma_1},
 \end{equation*}
-where we have used the Iverson bracket in the definition of $\beta$. Partial integration then lead to the weak form
+where we have used an indicator function in the definition of $\beta$.
+Partial integration then lead to the weak form
 \begin{equation*}
 \begin{aligned}
     \int_\Omega \theta v\dx + \bar{\alpha}\int_\Omega\nabla\theta\nabla v\dx &+ \frac{\bar{\alpha}}{k}\int_{\partial\Omega}\beta(x)u(t)\theta v\ds \\
@@ -86,41 +90,44 @@ For the implementation we initialise $p^{T/\Delta t}$ using the end time conditi
 
 The idea of a descent method consist of finding an optimal direction $d_k$ and stepsize $a_k$ at a given iteration $k$, where say our control is given by $u_k$. We want to find
 \begin{equation*}
-    F(u_k + \alpha_kd_k) < F(u_k)
+    F(u_k + \alpha_kd_k) < F(u_k).
 \end{equation*}
 
-One Taylor expand the LHS around $u_k$ to get a way to choose the descent direction, typically one can take different means to decide this, but a descent direction can in general be chosen by 
+One Taylor expand the left-hand side around $u_k$ to get a way to choose the descent direction, typically one can take different means to decide this, but a descent direction can in general be chosen by 
 \begin{equation*}
-    d_k = \arg\min_{||d||_U=1} \langle \nabla F(u_k), d \rangle_U
+    d_k = \arg\min_{\|d\|_U=1} \langle \nabla F(u_k), d \rangle_U.
 \end{equation*}
-We consider gradient descent therefore we choose the descent direction by setting $d_k = -\nabla F(u_k)$. After deciding the gradient direction one need to determine how far to go in that direction, this is decided by $\alpha_k$, called \textit{line search} parameter. The ideal such parameter is 
+We consider the gradient descent, therefore we choose the descent direction by setting $d_k = -\nabla F(u_k)$. After deciding the gradient direction one need to determine how far to go in that direction, this is decided by $\alpha_k$, called \textit{line search} parameter. The ideal such parameter is 
 \begin{equation*}
-    a_k = \arg \min_{\alpha>0} \{ F(u_k + \alpha d_k) \}
+    a_k = \arg \min_{\alpha>0} \{ F(u_k + \alpha d_k) \}.
 \end{equation*}
-There are different ways to choose this line search step. One require a couple of properties to be satisfied by this line search parameter these are
+There are different ways to choose this line search step. One require a couple of properties to be satisfied these are
 \begin{align*}
-    F(u_k + \alpha_kd_k) < F(u_k) \text{  } \forall k \\
-    F(uk + \alpha_k d_k) - F(u_k) \rightarrow 0 \text{ as } k\rightarrow \infty
+    F(u_k + \alpha_kd_k) < F(u_k) \text{  } \quad\forall k \\
+    F(uk + \alpha_k d_k) - F(u_k) \rightarrow 0 \text{ as } k\rightarrow \infty.
 \end{align*}
-We stick with Armijo rule as our line search strategy. This method consists of given a descent direction $d_k$ of F at $u_k$ choose the largest $a_k \in \{ \beta^0, \beta, \beta^2,..,\beta^m,... \}$ such that
+We stick with Armijo rule as our line search strategy. This method consists of given a descent direction $d_k$ of F at $u_k$, choose the largest $a_k \in \{ \beta^0, \beta, \beta^2,..,\beta^m,... \}$ such that
 \begin{equation}\label{eq:armijo}
     F (u_k + \alpha_kd_k) - F(u_k) \leq \mu \alpha_k \langle \nabla F(u_k),d_k \rangle_{U}
 \end{equation}
-where $\mu,\beta  \in (0,1)$ are chosen constant, that is we use backtracking to determine the stepsize \cite{iterativeMethods}. We set $\mu = 10^{-4}$ and $\beta = \frac{1}{2}$. More facts about Armijo rule and the convergence properties of this line search strategy is in \cite{numMethods} \cite{iterativeMethods}. However we have control-constraints, so we need to ensure the argument is placed inside the admissable set of controls $U_{\textrm{ad}}$, in particular we have box constraints given in \eqref{eq:box_constraints}, that is we have a lower bound $u_a$ and upper bound $u_b$ for the control variable. Therefore we need to use a projection onto the set of admissable controls, that is why it is called the projected gradient descent method. We introduce a cut-off function i.e. a projection given by
+where $\mu,\beta  \in (0,1)$ are chosen constant, that is we use backtracking to determine the stepsize \cite{iterativeMethods}. We set $\mu = 10^{-4}$ and $\beta = \frac{1}{2}$. More facts about Armijo rule and the convergence properties of this line search strategy is in \cite{numMethods} \cite{iterativeMethods}. However we have control-constraints, so we need to ensure the argument is placed inside the admissable set of controls $U_{\textrm{ad}}$. In particular we have box constraints given in \eqref{eq:box_constraints}, that is we have a lower bound $u_a$ and upper bound $u_b$ for the control variable. Therefore we need to use a projection onto the set of admissable controls, which is why it is called the projected gradient descent method. We introduce a cut-off function i.e. a projection given by
 \begin{equation}
     \label{eq:projection}
     \mathbb{P}_{[u_a,u_b]}(v) := \max \{u_a, \min \{u_b,v \} \}
 \end{equation}
-this should hold componentwise, if one allow $u_a$ and $u_b$ to be vectors, notation is similar to \cite{Algorithms}. One have to introduce this into the gradient descent method and Armijo's rule. That is we have to consider the projected Armijo's rule which is determine $\alpha_k \in \{1, \frac{1}{2},\frac{1}{4},.. \}$ such that 
-\begin{equation*}
+this should hold componentwise, if one allow $u_a$ and $u_b$ to be vectors, notation is similar to \cite{Algorithms}. One have to introduce this into the gradient descent method and Armijo's rule. In our case, the projected Armijo's rule then reads; 
+
+\begin{align*}
+    \text{determine $\alpha_k \in \{1, \frac{1}{2},\frac{1}{4},.. \}$ such that } \\
     F \bigg (\mathbb{P}_{[u_a,u_b]}(u_k + \alpha_kd_k) \bigg ) - F(u_k) \leq \mu \alpha_k \langle \nabla F(u_k),d_k \rangle_{U}
-\end{equation*}
+\end{align*}
+
 A pseudocode for the whole Projected Gradient Descent method is shown in Algorithm 1. We introduce two stopping criterion's, one based on the minimum allowed step length, and one on the difference in the computed values of the control given by 
 \begin{equation}
     \label{eq:stopping}
     \tau := \|u^{(k+1)} - u^{(k)}\|_U 
 \end{equation}
-This is to check that the controls converge towards a value, $U$ is the space of the controls. We therefore want to consider an optimization algorithm which is based on a quadratic approximation. 
+This is to check that the controls converge towards a value. $U$ is the space of the controls. W
 
 \begin{codebox}
 \Procname{$\proc{Algorithm1: Projected Steepest Descent with Armijo}$}
@@ -166,7 +173,7 @@ This behaviour is confirmed by the results shown in figure \ref{fig:armijo}. Her
 \end{figure}
 \begin{table}
     \centering
-    \caption{Values computed by Gradient descent with the Arimjo rule.}
+    \caption{Values computed by Gradient descent with the Armijo rule.}
     \label{table:armijo}
     \begin{tabular}{@{}lrSS}
          \toprule
@@ -274,7 +281,7 @@ Where $\tau$ is calculated as in Algorithm 1.  Numerical experiments show that a
 Expect to observe superior convergence properties of Newton's method compared to Steepest Descent, as Newton's method is superlinearly convergent compared to $q$-linearly convergent. The rate of convergence can be measured similarly as in \cite{DPSteel} by setting 
 \begin{equation}
     \label{eq:rate_of_conv}
-    e_k := \frac{||u^{(k)}-\bar{u}||_U + ||\theta^{(k)}-\bar{\theta}||_{L^2(Q)} +||p^{(k)}-\bar{p}||_{L^2(Q)} }{||u^{(k+1)}-\bar{u}||_U + ||\theta^{(k+1)}-\bar{\theta}||_{L^2(Q)} +||p^{(k+1)}-\bar{p}||_{L^2(Q)}}
+    e_k := \frac{\|u^{(k)}-\bar{u}\|_U + \|\theta^{(k)}-\bar{\theta}\|_{L^2(Q)} +\|p^{(k)}-\bar{p}\|_{L^2(Q)} }{\|u^{(k+1)}-\bar{u}\|_U + \|\theta^{(k+1)}-\bar{\theta}\|_{L^2(Q)} +\|p^{(k+1)}-\bar{p}\|_{L^2(Q)}}
 \end{equation}
 where $(\bar{\theta},\bar{u},\bar{p})$ is the analytical solution to the control problem. We use this as a convergence test of the two algorithm on a control problem where we can find an analytical solution. 
 

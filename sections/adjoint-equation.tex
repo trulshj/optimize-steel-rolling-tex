@@ -2,12 +2,12 @@
 In this section we will use the formal Langrange method to derive the adjoint equation and the optimality system \cite{optimalControl}. Formal in the sense that we use a lagrange multiplier $p$ without proving its existence in the derivation done here, we do that in Section \ref{proof}. The state system for our optimal control problem is given by a linear parabolic partial differential equation, in particular a heat equation
 
 \begin{align*}
-      \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) &= 0 \quad &\text{in } \Omega \\
-      -k \frac{\partial \theta}{\partial \nu} &= u(t) (\theta - \theta_w) \quad &\text{on } \Gamma_1, \\
-      -k \frac{\partial \theta}{\partial \nu} &= 0 \quad &\text{on } \Gamma_0, \\
-      \theta(x, 0) &= \theta_0 &
+      \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) &= 0 \quad &\text{in } \Omega \times (0,T) \\
+      -k \frac{\partial \theta}{\partial \nu} &= u(t) (\theta - \theta_w) \quad &\text{on } \Gamma_1 \times (0,T), \\
+      -k \frac{\partial \theta}{\partial \nu} &= 0 \quad &\text{on } \Gamma_0\times (0,T), \\
+      \theta(x, 0) &= \theta_0 \quad &\text{in } \Omega 
 \end{align*}
-The domain $Q = \Omega \times (0,T)$, for the hot rolling of steel is shown in Figure \ref{fig:steel_slab}. The blue arrows represent the coolant being sprayed onto the steel slab. The boundary $\gamma_1$ is marked, while the dashed lines represent $\gamma_2$. 
+The domain $Q = \Omega \times (0,T)$, for the hot rolling of steel is shown in Figure \ref{fig:steel_slab}. The blue arrows represent the coolant being sprayed onto the steel slab. The boundary $\Gamma_1$ is marked, while the dashed lines represent $\Gamma_2$. 
 \begin{figure}
     \centering
     % \includegraphics{figures/steel_slab_visualization.jpg}
@@ -16,22 +16,30 @@ The domain $Q = \Omega \times (0,T)$, for the hot rolling of steel is shown in F
     \label{fig:steel_slab}
 \end{figure}
 
-More generally one may consider a domain $\Omega \subset \mathbb{R}^3$ which is bounded with a Lipschitz boundary, $\partial \Omega = \Gamma_1 \cup \Gamma_2$. A suitable function space for the solution of a linear parabolic PDE is 
+More generally one may consider a domain $\Omega \subset \mathbb{R}^3$ which is bounded with a Lipschitz boundary, $\partial \Omega = \Gamma_1 \cup \Gamma_2$, but we will not do that here. A suitable function space for the solution of a linear parabolic PDE is 
 \begin{equation}
     \label{eq:funcSpace}
     W(0,T) : = \{ \theta \in L^2(0,T;H^1(\Omega)) : \quad \frac{\partial \theta}{\partial t} \in L^2(0,T;(H^1(\Omega))^{*}) \}
 \end{equation}
-It is natural to endow this space with the following norm, let $u \in W(0,T)$ then 
+We endow this space with the following norm, let $u \in W(0,T)$ then 
 \begin{equation*}
     \|u\|_{W(0,T)} := \bigg (\int_{0}^T\|u(t)\|^2_{H^{1}(\Omega)}\dt \bigg ) ^{\frac{1}{2}} + \bigg (\int_{0}^T\|u'(t)\|^2_{H^{1}(\Omega)^{*}}\dt \bigg ) ^{\frac{1}{2}}
 \end{equation*}
-In general we mean by the notation $L^{p}(a,b,X)$ the linear space of all equivalence classes of measurable vector valued functions $u:[a,b] \rightarrow X$ which have the property that
+This is also a Hilbert space with the inner product given by 
+
+\begin{equation*}
+    \langle u, v \rangle_{W(0,T)} := \int_{0}^T\langle u(t),v(t) \rangle _{H^{1}(\Omega)}\dt  +  \int_{0}^T \langle u'(t), v'(t) \rangle_{H^{1}(\Omega)^{*}}\dt 
+\end{equation*}
+
+We follow the notion by \cite{optimalControl} and therefore the notation $L^{p}(a,b,X)$ means the linear space of all equivalence classes of measurable vector valued functions $u:[a,b] \rightarrow X$ which have the property that
 \begin{equation*}
     \int_{a}^b\|u\|_X^p \dt<\infty
 \end{equation*}
 
+We call a function vector-valued when it maps from $[a,b] \subset \mathbb{R}$ into a Banach space $X$. 
+
 \subsection{The adjoint eqution and the gradient}
-We start by finding the weak formulation for the problem defined in \eqref{eq:heat}. We multiply the equation \eqref{eq:heat-in-omega} by a test function $\psi\in H^{1,1}(Q)$. That is a function which has weak first-order partial derivatives in space and time, and integrate over the domain $Q$. We furthermore assume that the heat conductivity, $k$, heat capacity $c_p$ and density $\rho$ are all scalars, partial integration in space then yields 
+We start by finding the weak formulation for the problem defined in \eqref{eq:heat}. We multiply the equation \eqref{eq:heat-in-omega} by a test function $\psi\in W_2^{1,1}(Q)$ and integrate over the space-time cylinder $Q$. That is we multiply by a function which has weak first-order partial derivatives in space and time and second order integrability, We furthermore assume that the heat conductivity, $k$, heat capacity $c_p$ and density $\rho$ are all scalars, partial integration in space then yields 
 \begin{equation}
 \begin{aligned}
   0 &= \iint_Q (\theta_t - \frac{k}{\rho c_p}\Delta\theta)\psi\dxdt  \\
@@ -39,11 +47,13 @@ We start by finding the weak formulation for the problem defined in \eqref{eq:he
 \end{aligned}
 \end{equation}
 Now after inserting for the boundary conditions defined in \eqref{eq:heat}, we end up with the following weak formulation of the state equation
-\begin{align}\label{eq:weak-form}
+\begin{equation}\label{eq:weak-form}
+\begin{gathered}
   \iint_Q \theta_t\psi\dxdt + \frac{k}{\rho c_p}\iint_Q\nabla\theta \cdot \nabla\psi\dxdt + \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)(\theta - \theta_w)\psi\dsdt = 0\\
   \theta|_{t=0} = \theta_0
-\end{align}
-where $\Sigma_i = \Gamma_i\times(0,T)$. We view $\theta_t$ as being in the space $ L^2(0,T;H^1(\Omega)^{*})$. Due to the isolation Neumann condition at $\Sigma_2$ all these boundary terms vanishes. Now one can use a density argument to lessen the requirement on the test function such that one only require that $v \in W(0,T)$ which is introduced below. In fact this weak formulation is even valid for $v \in L^2(0,T,H^1(\Omega))$. 
+\end{gathered}
+\end{equation}
+where $\Sigma_i = \Gamma_i\times(0,T)$. We require $\theta \in W(0,T)$. Due to the isolation Neumann condition at $\Sigma_2$ only the part at $\Sigma_1$ survives. Now one can use a density argument extend this variational formulation for $\phi \in W(0,T)$ and the integrals appearing in the variational formulation are all continuous in the test function $\phi$. \bigskip
 
 From the weak formulation of the problem, we can easily set up the Lagrangian function, by subtracting the weak formulation of the problem \eqref{eq:weak-form} from the cost functional \eqref{eq:cost-func}. The test function is replaced with a Lagrange multiplier function $p$. This gives
 \begin{equation}
@@ -52,7 +62,10 @@ From the weak formulation of the problem, we can easily set up the Lagrangian fu
   &- \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)(\theta - \theta_w)p \dsdt
   \end{aligned}
 \end{equation}
-As we can see our Lagrangian $\L : W(0,T)\cap C(\bar{Q}) \times L^{\infty}(0,T) \times  W(0,T) \cap C(\bar{Q}) \rightarrow \mathbb{R}$.
+As we will see in Section 3, we have that our Lagrangian is a map from 
+\begin{equation*}
+    \L : W(0,T)\cap C(\bar{Q}) \times L^{\infty}(0,T) \times  W(0,T) \cap C(\bar{Q}) \rightarrow \mathbb{R}
+\end{equation*}.
 
 \subsubsection{Adjoint equation}
 Now we derive the adjoint equation. This is done by  setting the directional derivative of the Lagrangian (with respect to the state variable) equal to zero. Assume the direction $h\in H^1(Q)$ is such that $h(x, 0) = 0$. % Antagelsen h(x, 0) = 0 popper visst ut av seg selv hvis man gjør noe på en bestemt måte i følge Dietmar.
@@ -112,7 +125,7 @@ This constitutes the \textit{adjoint equation}, which we restate below
 This adjoint equation for the adjoint state $p$ runs backwards in time, but since the final condition i.e. $p(x,T)$ is predescribed instead of the initial condition, the problem is well-posed. If one had posed $p|_{t=0}$ instead one would have gotten an ill-posed backward parabolic equation. The driving force is end-temperature difference between the desired state and the actual temperature state of the steel slab.
 
 \subsubsection{Gradient}
-We assume box-constraints \eqref{eq:box_constraints}, then we can derive the variational inequality which is a first-order neccessary optimality condition to be satisfied by an optimal control $\bar{u} \in U_{ad}$. The variational inequality is given by 
+We continue with the assumption about box-constraints \eqref{eq:box_constraints}, then we can derive the variational inequality which is a first-order neccessary optimality condition to be satisfied by an optimal control $\bar{u} \in U_{ad}$. The variational inequality is given by 
 \begin{equation*}
     \L_u(\bar{\theta},\bar{u},p)(u-\bar{u}) \geq 0 \text{ for } \forall u\in U_{ad}
 \end{equation*}
@@ -161,18 +174,22 @@ Now the optimality system of our control problem, \eqref{eq:heat} consists of th
       \end{cases}
       \end{align*}
 \begin{equation*}
-      \gamma u - \frac{1}{\rho c_p} \int_{\Gamma_1} (\theta - \theta_w)p \ds \geq 0
+      \gamma u - \frac{1}{\rho c_p} \int_{\Gamma_1} (\theta - \theta_w)p \ds =0
 \end{equation*}
 
 This system is a first order necessary optimality condition. That is if $\bar{u} \in U_{ad}$ is an optimal control to our optimal control problem and $\bar{\theta} = S(\bar{u})$ is the associated solution to the state system. Then there exists an adjoint state $\bar{p}$ such that the adjoint system is satisfied, and the variational inequality is satisfied. 
 
-Now one can restate this optimalilty system using the projection formula if one assume box-constraints. That is, if we assume
 
-\begin{equation}
-    \label{eq:box_constraints}
+%Tror ikke vi trenger det under
+
+\iffalse
+Now one can restate this optimalilty system using the projection formula if one assume box-constraints. That is, if we assume
+\begin{equation*}
     U_{\mathrm{ad}} := \{ u \in L^2(\Sigma_1): u_a(x,t) \leq u(x,t) \leq u_b(x,t) \text{ for a.e. } (x,t) \in \Sigma_1 \},
-\end{equation}
+\end{equation*}
 then a control $\bar{u} \in U_{\mathrm{ad}}$ and the associated state $\bar{\theta}$ is optimal if and only if it satisfy together with the adjoint state $p$ solving \eqref{eq:adjoint-eqn}  and $\gamma >0$ i.e. the regularisation parameter is positive that
+\fi
+
 %\begin{equation}
 %    \label{eq:Proj_formula}
 %    \bar{u(x,t)} = \mathbb{P}_{[u_a(x,t), u_b(x,t)]} \{\frac{1}{\gamma}\theta_w(x,t)p(x,t) \}
