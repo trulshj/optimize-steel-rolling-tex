@@ -22,17 +22,25 @@ More generally, one may consider a domain $\Omega \subset \mathbb{R}^3$ which is
     \label{eq:funcSpace}
     W(0,T) : = \{ \theta \in L^2(0,T;H^1(\Omega)) : \quad \frac{\partial \theta}{\partial t} \in L^2(0,T;(H^1(\Omega))^{*}) \}
 \end{equation}
-It is natural to endow this space with the following norm:% let $u \in W(0,T)$ then 
+We endow this space with the following norm, let $u \in W(0,T)$ then 
 \begin{equation*}
     \|u\|_{W(0,T)} := \bigg (\int_{0}^T\|u(t)\|^2_{H^{1}(\Omega)}\dt \bigg ) ^{\frac{1}{2}} + \bigg (\int_{0}^T\|u'(t)\|^2_{H^{1}(\Omega)^{*}}\dt \bigg ) ^{\frac{1}{2}}
 \end{equation*}
-In general, the notation $L^{p}(a,b,X)$ denotes the linear space of all equivalence classes of measurable vector valued functions $u:[a,b] \rightarrow X$ with the property that
+This is also a Hilbert space with the inner product given by 
+
+\begin{equation*}
+    \langle u, v \rangle_{W(0,T)} := \int_{0}^T\langle u(t),v(t) \rangle _{H^{1}(\Omega)}\dt  +  \int_{0}^T \langle u'(t), v'(t) \rangle_{H^{1}(\Omega)^{*}}\dt 
+\end{equation*}
+
+We follow the notion by \cite{optimalControl} and therefore the notation $L^{p}(a,b,X)$ means the linear space of all equivalence classes of measurable vector valued functions $u:[a,b] \rightarrow X$ which have the property that
 \begin{equation*}
     \int_{a}^b\|u\|_X^p \dt<\infty.
 \end{equation*}
 
+We call a function vector-valued when it maps from $[a,b] \subset \mathbb{R}$ into a Banach space $X$. 
+
 \subsection{The adjoint eqution and the gradient}
-We start by finding the weak formulation for the problem defined in \eqref{eq:heat}. We multiply the equation \eqref{eq:heat-in-omega} by a test function $\psi\in H^{1,1}(Q)$, a function which has weak first-order partial derivatives in space and time. We then integrate over the domain $Q$. We assume that the heat conductivity, $k$, heat capacity $c_p$ and density $\rho$ are all constnat scalars, so that partial integration in space yields 
+We start by finding the weak formulation for the problem defined in \eqref{eq:heat}. We multiply the equation \eqref{eq:heat-in-omega} by a test function $\psi\in H^{1,1}(Q)$, a function which has weak first-order partial derivatives in space and time. We then integrate over the domain $Q$. We assume that the heat conductivity, $k$, heat capacity $c_p$ and density $\rho$ are all constant, so that partial integration in space yields 
 \begin{equation}
 \begin{aligned}
   0 &= \iint_Q (\theta_t - \frac{k}{\rho c_p}\Delta\theta)\psi\dxdt  \\
@@ -55,7 +63,10 @@ From the weak formulation of the problem, we can easily set up the Lagrangian fu
   &- \frac{1}{\rho c_p}\iint_{\Sigma_1} u(t)(\theta - \theta_w)p \dsdt
   \end{aligned}
 \end{equation}
-As we can see our Lagrangian $\L : W(0,T)\cap C(\bar{Q}) \times L^{\infty}(0,T) \times  W(0,T) \cap C(\bar{Q}) \rightarrow \mathbb{R}$.
+As we will see in Section 3, we have that our Lagrangian is a map from 
+\begin{equation*}
+    \L : W(0,T)\cap C(\bar{Q}) \times L^{\infty}(0,T) \times  W(0,T) \cap C(\bar{Q}) \rightarrow \mathbb{R}
+\end{equation*}.
 
 \subsubsection{Adjoint equation}
 The adjoint equation is derived by setting the directional derivative of the Lagrangian with respect to the state variable equal to zero. Assume the direction $h\in H^1(Q)$ is such that $h(x, 0) = 0$. % Antagelsen h(x, 0) = 0 popper visst ut av seg selv hvis man gjør noe på en bestemt måte i følge Dietmar.
@@ -112,10 +123,10 @@ This constitutes the \textit{adjoint equation}, which we restate below
    \end{align}
    \label{eq:adjoint-eqn}
 \end{subequations}
-This adjoint equation for the adjoint state $p$ runs backwards in time, but since the final condition (i.e. $p(x,T)$) is predescribed instead of the initial condition, the problem is well-posed. If one had posed $p(x, 0)$ instead one would have gotten an ill-posed backward parabolic equation. The driving force is end-temperature difference between the desired state and the actual temperature state of the steel slab.
+This adjoint equation for the adjoint state $p$ runs backwards in time, but since the final condition (i.e. $p(x,T)$) is prescribed instead of the initial condition, the problem is well-posed. If one had posed $p(x, 0)$ instead one would have gotten an ill-posed backward parabolic equation. The driving force is end-temperature difference between the desired state and the actual temperature state of the steel slab.
 
 \subsubsection{Gradient}
-With box constraints on the control (see equation\eqref{eq:box_constraints}) we can derive the variational inequality, a first-order neccessary optimality condition to be satisfied by an optimal control $\bar{u} \in U_{ad}$. The variational inequality is given by 
+With box constraints on the control (see equation\eqref{eq:box_constraints}) we can derive the variational inequality, a first-order necessary optimality condition to be satisfied by an optimal control $\bar{u} \in U_{ad}$. The variational inequality is given by 
 \begin{equation*}
     \L_u(\bar{\theta},\bar{u},p)(u-\bar{u}) \geq 0\ \forall u\in U_{ad}
 \end{equation*}
@@ -137,7 +148,7 @@ The gradient of the reduced cost funtional $F(u) := J(y(u),u)$ can be obtained f
     F'(u) = \L_u(y(u),u,p(u))
 \end{equation*}
 %
-The space $H^1(0,T)$ is a hilbert space. By Riesz representation theorem we can identify $H$ with $H^{*}$ for any Hilbert space $H$. Therefore, by identifying an isomorphism % har vi funnet en isomorfisme?
+The space $H^1(0,T)$ is a Hilbert space. By Riesz representation theorem we can identify $H$ with $H^{*}$ for any Hilbert space $H$. Therefore, by identifying an isomorphism % har vi funnet en isomorfisme?
 we find that the $u$-derivative of the lagrangian and consequently the gradient of our reduced cost functional is
 %
 \begin{equation*}
@@ -165,20 +176,23 @@ The optimality system of our control problem \eqref{eq:heat} consists of the sta
       \end{cases}
       \end{align*}
 \begin{equation*}
-      \gamma u - \frac{1}{\rho c_p} \int_{\Gamma_1} (\theta - \theta_w)p \ds \geq 0
+      \gamma u - \frac{1}{\rho c_p} \int_{\Gamma_1} (\theta - \theta_w)p \ds =0
 \end{equation*}
 %
 This is a system of first order necessary optimality conditions. That is, if $\bar{u} \in U_{ad}$ is an optimal control to our optimal control problem and $\bar{\theta} = S(\bar{u})$ is the associated state, then there exists an adjoint state $\bar{p}$ such that the adjoint system is satisfied, and the variational inequality is satisfied. 
 
+
+%Tror ikke vi trenger det under
+
+\iffalse
 Now one can restate this optimalilty system using the projection formula if one assume box-constraints. That is, if we assume
-%
-\begin{equation}
-    \label{eq:box_constraints}
+\begin{equation*}
     U_{\mathrm{ad}} := \{ u \in L^2(\Sigma_1): u_a(x,t) \leq u(x,t) \leq u_b(x,t) \text{ for a.e. } (x,t) \in \Sigma_1 \},
-\end{equation}
-then a control $\bar{u} \in U_{\mathrm{ad}}$ and the associated state $\bar{\theta}$ is optimal if and only if it satisfy together with the adjoint state $p$ solving \eqref{eq:adjoint-system}  and $\gamma >0$ i.e. the regularisation parameter is positive that %Denne ble kuttet litt brått
-% Skal denne være med? I så fall burde vi vise det.
-% \begin{equation}
+\end{equation*}
+then a control $\bar{u} \in U_{\mathrm{ad}}$ and the associated state $\bar{\theta}$ is optimal if and only if it satisfy together with the adjoint state $p$ solving \eqref{eq:adjoint-eqn}  and $\gamma >0$ i.e. the regularisation parameter is positive that
+\fi
+
+%\begin{equation}
 %    \label{eq:Proj_formula}
 %    \bar{u}(x,t) = \mathbb{P}_{[u_a(x,t), u_b(x,t)]} \left\{\frac{1}{\gamma}\theta_w(x,t)p(x,t) \right\}
 % \end{equation}

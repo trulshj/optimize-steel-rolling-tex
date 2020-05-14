@@ -1,27 +1,9 @@
+\section{Conclusion}
 
-\subsection{Further improvements to the model}
-The model can take even more physical situations into consideration by coupling the  heat equation with an ordinary differential equation that describe the evolution of steel microstructure during the cooling process, as in \cite{DPSteelOverview}. Here, the optimal control problem for the controlled cooling of steel profiles in order to obtain a desired temperature, as well as a desirable phase distribution in the steel, is considered. This leads to two control variables: One regarding the cooling of the steel, as we have already seen; one regarding the composition of the steel.
+In this project we delved into the the problem of optimal cooling of a steel slab. The governing state equation was the homogeneous heat equation, with heat conduction through only parts of the boundary. The problem we considered was reaching a desired end time temperature, by applying coolant at the boundary. 
 
-A phase transformation in the steel microstructure can in general be described by an initial value problem of the form 
-\begin{align*}
-    \frac{\partial f}{\partial t} = G(f,\theta ) \\
-    f_{t=0} = 0
-\end{align*}
-Here $f$ is a volume fraction of the new phase, and $G$ is typically a nonlinear function of its arguments. The phase-development depends on the temperature and the volume fraction of the phase already present. One start with zero of the given phase. 
+We used the formal Lagrange method for finding the adjoint equation and the gradient of reduced cost functional. We also showed existence of a solution to the state equation,  existence and uniqueness for the adjoint equations, and existence of a minimiser of the optimisation problem.
 
-Then one can modify the heat equation to include a right-hand side term $\rho L \frac{\partial f}{\partial t}$, where $L$ is latent heat, i.e. a quantity describing the release of heat due to the phase transformation. One can also vary the coolant profile, that is applied different amount of water to the different parts of the steel slab; this can modelled through varying $\beta (x)$. The parabolic PDE for the temperature evolution then becomes
-\begin{align*}
-    \rho c_p \theta_t - \nabla \cdot (k\nabla \theta) = \rho L f_t \quad \textrm{ in } Q \\
-    - k \frac{\partial \theta}{\partial n} = u(t)\beta(x) \bigg (\theta - \theta_w \bigg ) \quad \textrm{ on } \Sigma_1 \\
-    -k \frac{\partial \theta}{\partial n} = 0 \quad \textrm{ on } \Sigma_2 \\
-    \theta(x,0) = \theta_0(x) \quad \textrm{ in } \Omega
-\end{align*}
-We still operate with isolation on the boundary $\Sigma_2$. We now also want to obtain desired phase distribution at the end of the cooling process, denoted $f_d(x)$. This can be modelled mathematically by including an extra quadratic tracking term of the phase distribution into the cost functional. The resulting cost functional then becomes
-%
-\begin{equation*}
-\begin{aligned}
-        J(\theta, f, u) := \frac{\alpha_1}{2}\int_{\Omega}(f(x,T)-f_d(x))^2\dx + \frac{\alpha_2}{2}\int_{\Omega}(\theta(x,T) - \theta_d(x))^2\dx \\ + \frac{\alpha_3}{2}\int_0^Tu(t)^2 \dt
-\end{aligned}
-\end{equation*}
-%
-Choosing the appropriate function $G(f,\theta)$ depends on the particular phase-transformation being considered. The latent heat $L$ also depends upon the chosen phase-transformation. The appropriate coolant profile $\beta(x)$ must also be chosen. Further, one need to choose the desired temperature profile $\theta_d(x)$ and the desired volume-fraction profile for the microstructure $f_d(x)$. All these depend upon the particular application. This extended model is the one used in some parts of industry.
+To solve the problem numerically we applied the gradient descent method with Armijo line search, and used FEniCS for solving the PDEs. The results showed that the numerical method were able to converge to a minimum of the cost functional. 
+
+As described in Section \ref{sec:test-cases}, we also tried implementing a second cost functional, which we expected to give a gradient that was not constant in the time variable. However, we were not able to get the desired results at this point, and we assume there is still some error in the code we were not able to find.

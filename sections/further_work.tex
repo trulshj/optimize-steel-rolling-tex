@@ -1,0 +1,31 @@
+\section{Further work}
+
+We have successfully implemented a projected gradient descent algorithm, which works for the simple problem of achieving a desired temperature in a steel slab with constant heat capacity and composition throughout the entire cooling process. However, as previously discussed, this is a big simplification that does not take into account several more complicated aspects of reality, such as the composition of the steel, the latent heat of the material as it undergoes phase transitions, and the fact that the physical properties of the material will in general be temperature dependent. If this work was to be extended furhter, implementing this would be a natural goal. One possible direction for such an extended model is discussed in the next subsection.
+
+As the complexity of the problem increases, the simple projected gradient descent algorithm might prove unsatisfactory. In that case, making the transition to Newton's method or one of the other optimisation algorithms we previously mentioned would also be natural.
+
+\subsection{Further improvements to the model}
+The model can take even more physical situations into consideration as in \cite{DPSteelOverview} by coupling the  heat equation with an ordinary differential equation that describe the evolution of steel microstructure during the cooling process. Then one consider the optimal control problem for the controlled cooling of steel profiles in order to obtain a desired temperature and a phase distribution in the steel, thus one get two control variables. Such a phase transformation in the steel microstructure can in general be described by an initial value problem of the form 
+\begin{align*}
+    \frac{\partial f}{\partial t} = G(f,\theta ) \\
+    f_{t=0} = 0
+\end{align*}
+Here $f$ is the volume fraction of the new phase, G is typically a nonlinear function of its arguments, so the phase-development depends on temperature and the volume fraction of the phase already present. One start with zero of the given phase. 
+
+Then one can modify the heat equation to include a right-hand side term $\rho L \frac{\partial f}{\partial t}$, where $L$ is latent heat, that is a quantity describing the release of heat due to the phase transformation. One can also vary the coolant profile, that is applied different amount of water to the different parts of the steel slab, this can be given by a function $\beta (x)$. The parabolic PDE for the temperature evolution then become 
+\begin{align*}
+    \rho c_p \theta_t - \nabla \cdot (k\nabla \theta) &= \rho L f_t  &&\textrm{ in } Q \\
+    - k \frac{\partial \theta}{\partial n} &= u(t)\beta(x) \left(\theta - \theta_w \right) &&\textrm{ on }\Sigma_1 \\
+    -k \frac{\partial \theta}{\partial n} &= 0 &&\textrm{ on } \Sigma_2 \\
+    \theta(x,0) &= \theta_0(x) &&\textrm{ in } \Omega
+\end{align*}
+Here we still operate with isolation on the boundary $\Sigma_2$. We now also want to obtain desired phase distribution at the end of the cooling process, denoted $f_d(x)$. This can be modelled mathematically by including an extra quadratic tracking term of the phase distribution into the cost functional. The resulting cost functional then becomes
+\begin{equation*}
+\begin{aligned}
+        J(\theta, f, u) := \frac{\alpha_1}{2}\int_{\Omega}(f(x,T)-f_d(x))^2\dx + \\ \frac{\alpha_2}{2}\int_{\Omega}(\theta(x,T) - \theta_d(x))^2\dx  + \frac{\alpha_3}{2}\int_0^Tu(t)^2 \dt.
+\end{aligned}
+\end{equation*}
+Choosing the appropriate function $G(f,\theta)$ depends on the particular phase-transformation being considered, as does the value of $L$. The coolant profile $\beta(x)$ must also be chosen. Furthermore one need to choose the desired temperature profile $\theta_d(x)$ and the desired volume-fraction profile for the microstructure $f_d(x)$. All these depending on the particular application, this mathematical model is used in the industry. 
+
+\subsection{Newton's method}
+ We will implement the simpler Gradient Descent method and compare it to Newton's method. The gradient descent method has an infamous slow convergence rate, compared to the super linear convergence rate of Newton's method.

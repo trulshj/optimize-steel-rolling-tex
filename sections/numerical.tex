@@ -1,4 +1,4 @@
-\section{Test cases}
+\subsection{New cost functional}\label{sec:new-cost-func}
 
 In the case of dual phase steel we can consider a more realistic scenario used in the industry. To do so we introduce two desired temperatures $\theta_{d_1}$ and $\theta_{d_2}$. For the optimal cooling of dual phase steel there is a phase transition in the higher temperature regime; this is modeled by the desired temperature $\theta_{d_1}$, which we wish to attain in a subset $[c_1T, c_2T]$ of $[0,T]$ with $c_2 < 1$. Then we expect the optimal cooling to lead to a rapid cooling towards $\theta_{d_1}$ and stay almost constant until $t=c_2T$. We also expect the optimal cooling strategy to lead to a rapid cooling towards the new final desired temperature $\theta_{d_2}$.
 
@@ -19,10 +19,10 @@ Here $\chi_E$ denotes the characteristic function for the set $E$. For convenien
 \end{equation*}
 subject to
 \begin{align*}
-       \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) &= 0 \quad &\text{in } Q  \\
-      -k \frac{\partial \theta}{\partial \nu} &= u(t) (\theta - \theta_w) \quad &\text{on } \Sigma_1, \\
-      -k \frac{\partial \theta}{\partial \nu} &= 0 \quad &\text{on } \Sigma_0, \\
-      \theta(x, 0) &= \theta_0 &
+       \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) &= 0  &&\text{in } Q  \\
+      -k \frac{\partial \theta}{\partial \nu} &= u(t) (\theta - \theta_w)  &&\text{on } \Sigma_1, \\
+      -k \frac{\partial \theta}{\partial \nu} &= 0  &&\text{on } \Sigma_0, \\
+      \theta(x, 0) &= \theta_0 
 \end{align*}
 
 We again use the formal Lagrange method to derive the adjoint system. The lagrangian takes the same form except an additional term which gives an extra contribution to the adjoint system. Taking the Fréchet derivative with respect to the state of the Lagrangian we get
@@ -37,12 +37,18 @@ We again use the formal Lagrange method to derive the adjoint system. The lagran
 Then we may use partial integration, and a similar argument as used to derive the previous adjoint system \eqref{eq:adjoint-system}. The new adjoint system is given by 
 \begin{subequations}
    \begin{align*} 
-      \rho c_p p_t + k\Delta p + \chi_{[c_1T,c_2T]}\alpha_1(\theta - \theta_{d_1})&= 0 \quad\qquad\textrm{ in } Q  \\
-      {-k}\frac{\partial p}{\partial\nu} &= u(t)p \,\,\quad\textrm{ on } \Sigma_1  \\
-      {-k}\frac{\partial p}{\partial\nu} &= 0 \,\quad\qquad\textrm{ on } \Sigma_0  \\
-      \rho c_p p(x, T) &= \alpha_2(\theta(x, T) - \theta_{d_2}). \quad \textrm{ in } \Omega
+      \rho c_p p_t + k\Delta p + \chi_{[c_1T,c_2T]}\alpha_1(\theta - \theta_{d_1})&= 0 &&\textrm{ in } Q  \\
+      {-k}\frac{\partial p}{\partial\nu} &= u(t)p &&\textrm{ on } \Sigma_1  \\
+      {-k}\frac{\partial p}{\partial\nu} &= 0 &&\textrm{ on } \Sigma_0  \\
+      \rho c_p p(x, T) &= \alpha_2(\theta(x, T) - \theta_{d_2})  &&\textrm{ in } \Omega.
    \end{align*}
 \end{subequations}
 We see that we got the additional term $\chi_{[c_1T,c_2T]}\alpha_1(\theta-\theta_{d_1})$ in the PDE, thus the adjoint state $p$ depends on the temperature distribution on the interval $[c_1T,c_2T]$. As a consequence we expect to observe a non-constant control $u$. As mentioned we expect a rapid decay towards $\theta_{d_1}$ then a constant $u$ until $t=c_2T$ and then again a rapid decay towards $\theta_{d_2}$. 
 %Since we only consider cooling by water, we need to require
 It is implicit that $\theta_{d_1} \geq \theta_{d_2}$.
+
+\subsubsection{Experiment}
+
+The new cost functional introduced above, and the new adjoint equation was also implemented in FEniCS. Since the cost functional penlizes the temperature to be equal to $\theta_{d_1}$ in the time interval $[c_1 T, c_2 T]$, the optimal control $u$ naturally has to be non constant in time. More specifically we expected $u$ to be equal to zero in this time interval, or at least very small (as long as the steel slab was cooled quickly down to the temperature $\theta_{d_1}$ before time $c_1 T$). 
+
+However, when the new cost functional and the new adjoint equaton was used in the gradient descent algorithm, we still got a gradient that was constant in time. This of course led to a solution $u$ that was also constant in time, which contradicted our expected result. We therefore assume there is some error in the code, that we were not able to find.

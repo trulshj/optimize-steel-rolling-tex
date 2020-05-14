@@ -1,7 +1,7 @@
 
 \section{Numerical implementation}
 
-To solve our optimal control problem we will consider two gradient-based optimization methods and compare their performance. We will implement the simpler Gradient Descent method and compare it to Newton's method. The gradient descent method has an infamous slow convergence rate, compared to the super linear convergence rate of Newton's method \cite{Algorithms}.
+To solve our optimal control problem we will consider two gradient-based optimization methods and compare their performance. We will implement the simpler Gradient Descent method. The gradient descent method has an infamous slow convergence rate, compared to the super linear convergence rate of Newton's method \cite{Algorithms}. Newton's method is described in appendix A.
 
 As both methods are gradient-based, we need to consider the reduced optimal control problem. Let $S$ be the solution operator for our state system:  $S(u):=\theta(\placeholder ,T)$. Then we can write our cost functional on reduced form, and our objective is then to minimize this reduced cost functional.
 \begin{equation}
@@ -37,9 +37,10 @@ where $\alpha$ is the thermal diffusivity defined in the previous section. We no
 \end{equation*}
 For the implementation it is convenient to combine the two Neumann boundary conditions \eqref{eq:state-system-bd-1} and \eqref{eq:state-system-bd-2} into the following expression:
 \begin{equation*}
-    -k\frac{\partial \theta}{\partial n} = \beta(x)u(t)(\theta - \theta_w) \quad\text{where}\quad \beta(x) = [x\in\Gamma_1],
+    -k\frac{\partial \theta}{\partial n} = \beta(x)u(t)(\theta - \theta_w) \quad\text{where}\quad \beta(x) = \chi_{\Gamma_1},
 \end{equation*}
-where we have used the Iverson bracket in the definition of $\beta$. Partial integration then leads to the weak form
+where we have used an indicator function in the definition of $\beta$.
+Partial integration then lead to the weak form
 \begin{equation*}
 \begin{aligned}
     \int_\Omega \theta v\dx + \bar{\alpha}\int_\Omega\nabla\theta\nabla v\dx &+ \frac{\bar{\alpha}}{k}\int_{\partial\Omega}\beta(x)u(t)\theta v\ds \\
@@ -85,25 +86,25 @@ For the implementation we initialize $p^{T/\Delta t}$ using the end time conditi
 
 The idea of a descent method is to iteratively approach an optimal control. This is done through starting with some initial guess $u_0$, and then finding some \emph{descent direction} $d_k$ and an associated step size $a_k$ at a given iteration $k$, where our control will then be given by $u_{k+1} = u_{k} + a_k d_k$. One obvious requirement is thus
 \begin{equation*}
-    F(u_k + \alpha_kd_k) < F(u_k)
+    F(u_k + \alpha_kd_k) < F(u_k).
 \end{equation*}
-Use the Taylor expansion of $F$ around $u_k$, we get a way to choose the descent direction:
+Using the Taylor expansion of $F$ around $u_k$, we get a way to choose the descent direction:
 %typically one can take different means to decide this, but a descent direction can in general be chosen by 
 \begin{equation*}
-    d_k = \arg\min_{||d||_U=1} \langle \nabla F(u_k), d \rangle_U
+    d_k = \arg\min_{\|d\|_U=1} \langle \nabla F(u_k), d \rangle_U.
 \end{equation*}
 Gradient descent gets its name from choosing the descent direction by setting $d_k = -\nabla F(u_k)$.
 
 Next, one need to determine how far to go in that direction. This is denoted by $\alpha_k$, called the step length, or the \textit{line search} parameter. The ideal such parameter is 
 \begin{equation*}
-    a_k = \arg \min_{\alpha>0} \{ F(u_k + \alpha d_k) \}
+    a_k = \arg \min_{\alpha>0} \{ F(u_k + \alpha d_k) \}.
 \end{equation*}
-There are different ways to choose this line search step. One require a couple of properties to be satisfied by this line search parameter these are
+There are different ways to choose this line search step. One require a couple of properties to be satisfied these are
 \begin{align*}
-    F(u_k + \alpha_kd_k) < F(u_k) \text{  } \forall k \\
-    F(uk + \alpha_k d_k) - F(u_k) \rightarrow 0 \text{ as } k\rightarrow \infty
+    F(u_k + \alpha_kd_k) < F(u_k) \text{  } \quad\forall k \\
+    F(uk + \alpha_k d_k) - F(u_k) \rightarrow 0 \text{ as } k\rightarrow \infty.
 \end{align*}
-We stick with Armijo rule as our line search strategy. This method consists of given a descent direction $d_k$ of F at $u_k$ choose the largest $a_k \in \{ \beta^0, \beta, \beta^2,..,\beta^m,... \}$ such that
+We stick with Armijo rule as our line search strategy. This method consists of given a descent direction $d_k$ of F at $u_k$, choose the largest $a_k \in \{ \beta^0, \beta, \beta^2,..,\beta^m,... \}$ such that
 \begin{equation}\label{eq:armijo}
     F (u_k + \alpha_kd_k) - F(u_k) \leq \mu \alpha_k \langle \nabla F(u_k),d_k \rangle_{U}
 \end{equation}
@@ -171,7 +172,7 @@ This behaviour is confirmed by the results shown in figure \ref{fig:armijo}. Her
 \end{figure}
 \begin{table}
     \centering
-    \caption{Values computed by Gradient descent with the Arimjo rule.}
+    \caption{Values computed by Gradient descent with the Armijo rule.}
     \label{table:armijo}
     \begin{tabular}{@{}lrSS}
          \toprule
@@ -277,7 +278,7 @@ Numerical experiments show that algorithm is rather insensitive to the initial c
 Expect to observe superior convergence properties of Newton's method compared to Steepest Descent, as Newton's method is superlinearly convergent compared to $q$-linearly convergent. The rate of convergence can be measured similarly as in \cite{DPSteel} by setting 
 \begin{equation}
     \label{eq:rate_of_conv}
-    e_k := \frac{||u^{(k)}-\bar{u}||_U + ||\theta^{(k)}-\bar{\theta}||_{L^2(Q)} +||p^{(k)}-\bar{p}||_{L^2(Q)} }{||u^{(k+1)}-\bar{u}||_U + ||\theta^{(k+1)}-\bar{\theta}||_{L^2(Q)} +||p^{(k+1)}-\bar{p}||_{L^2(Q)}}
+    e_k := \frac{\|u^{(k)}-\bar{u}\|_U + \|\theta^{(k)}-\bar{\theta}\|_{L^2(Q)} +\|p^{(k)}-\bar{p}\|_{L^2(Q)} }{\|u^{(k+1)}-\bar{u}\|_U + \|\theta^{(k+1)}-\bar{\theta}\|_{L^2(Q)} +\|p^{(k+1)}-\bar{p}\|_{L^2(Q)}}
 \end{equation}
 where $(\bar{\theta},\bar{u},\bar{p})$ is the analytical solution to the control problem. We use this as a convergence test of the two algorithm on a control problem where we can find an analytical solution. 
 
