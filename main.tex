@@ -20,7 +20,7 @@
 \maketitle
 
 \section{Introduction}
-We consider the optimal control problem for the controlled cooling of steel. Our end goal is to obtain a desired temperature $\theta_d$. In order to model such a cooling process mathematically, we use linear heat equation as our state equation, given by
+We consider an optimal control problem for the controlled cooling of steel. Our end goal is to obtain a desired temperature $\theta_d$. In order to model such a cooling process mathematically, we use linear heat equation as the state equation. This is given by
 \begin{subequations}
    \label{eq:heat}
    \begin{align}
@@ -30,7 +30,9 @@ We consider the optimal control problem for the controlled cooling of steel. Our
       \theta(x, 0) &= \theta_0 &\text{in } \Omega. &
    \end{align}
 \end{subequations}
-Here, $u = u(t) \colon [0, T] \to \mathbb{R}$ is the scalar-valued, time dependent heat transfer coefficient which acts as our unknown control, $c_p$ is the heat capacity, $k$ is thermal conductivity and $\rho$ is the density. The Neumann boundary condition in \eqref{eq:state-system-bd-1} is based on Newton's law of cooling; $\theta_w$ is the temperature of the applied coolant at the boundary. The goal is to determine a optimal $u$ such that $\theta(x, T)$ is ``as close as possible'' to some desired temperature $\theta_d$, where $T$ denotes the final time of the process. In order to model this we introduce a quadratic tracking term into the cost functional. We also require the control $u$ to be \emph{admissible}, i.e. if it is possible to apply the found control $u$ in some practical manner.
+Here, $u = u(t) \colon [0, T] \to \mathbb{R}$ is the scalar-valued, time dependent heat transfer coefficient which acts as our unknown control. In practice, this models the amount of coolant to be applied at specific points of time during the cooling process. The constant $c_p$ is the specific heat capacity of the steel to be cooled, $k$ its thermal conductivity, and $\rho$ is its density. The Neumann boundary condition in \eqref{eq:state-system-bd-1} is based on Newton's law of cooling; $\theta_w$ is the temperature of the applied coolant at the boundary.
+
+The goal is to determine a optimal $u$ such that $\theta(x, T)$ is ``as close as possible'' to a desired temperature $\theta_d$, where $T$ denotes the final time of the process. In order to model this we introduce a quadratic tracking term into the cost functional. We also require the control $u$ to be \emph{admissible}, i.e. if it is possible to apply the found control $u$ in some practical manner.
 
 More formally, we wish to minimize a cost functional of the form
 \begin{subequations}
@@ -48,9 +50,8 @@ and
 \end{subequations}
 We have defined $Q \coloneqq \Omega \times (0, T)$. Here $\gamma \geq 0$ is a penalizing parameter called Tikhonov regularization parameter, and the last term in $J(\theta, u)$ is a regularizing term which penalize high costs of the control.
 
-In this report we shall first develop first-order optimality conditions for \eqref{eq:heat}, then in Section 3 we prove existence of an optimal control, then we consider two gradient-based optimisation methods; The projected Gradient and Newton's method with primal-dual active set strategy, then we consider their performance on a test problem and on a more realistic situation used in the industry, finally we discuss some further improvements to the model used here. 
+In this report we shall first develop first-order optimality conditions for \eqref{eq:heat}. In Section 3 we move on to prove existence of an optimal control. Next, in section 4, we consider two gradient-based optimisation methods: The projected Gradient, and Newton's method with primal-dual active set strategy, where we consider their performance first on a test problem, and then on a more realistic situation used in the industry. Finally we discuss some further improvements to the model used here. 
 
-\section{Main part}
 \input{sections/adjoint-equation}
 \input{sections/statesystem}
 \input{sections/real_world}
