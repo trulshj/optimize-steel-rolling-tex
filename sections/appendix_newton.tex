@@ -54,7 +54,7 @@ The Newton direction at an iterate $(u_k, \mu_k)$ can be calculated by solving t
     \chi_{A_k^{+}}(u_k - u_b) + \chi_{A_k^{-}}(u_k - u_a)
     \end{bmatrix}
 \end{equation}
-The next dual variable $\mu_{k+1}$ is set to be zero on the the inactive set $I_k$. Pseudocode for Newton's method with primal-dual active set strategy is given in Algorithm 2, with $\tau$ is calculated as in Algorithm 1.
+The next dual variable $\mu_{k+1}$ is set to be zero on the the inactive set $I_k$. Pseudocode for Newton's method with primal-dual active set strategy is given in Algorithm 2, with $\tau$ is calculated as in Algorithm 1 in Section \ref{proj_grad}.
 \begin{codebox}
 \Procname{$\proc{Algorithm2: Newton's method with Primal-Dual Active Set Strategy}$}
 \li Choose initial value $u^{(0)}$ and $\mu_0$ 
@@ -96,6 +96,6 @@ The rate of convergence can be measured as in \cite{DPSteel}, setting
     \label{eq:rate_of_conv}
     e_k := \frac{\|u^{(k)}-\bar{u}\|_U + \|\theta^{(k)}-\bar{\theta}\|_{L^2(Q)} +\|p^{(k)}-\bar{p}\|_{L^2(Q)} }{\|u^{(k+1)}-\bar{u}\|_U + \|\theta^{(k+1)}-\bar{\theta}\|_{L^2(Q)} +\|p^{(k+1)}-\bar{p}\|_{L^2(Q)}}
 \end{equation}
-where $(\bar{\theta},\bar{u},\bar{p})$ is the analytical solution to the control problem. This is used as a convergence test of the two algorithms on a control problem where we can find an analytical solution. 
+where $(\bar{\theta},\bar{u},\bar{p})$ is the analytical solution to the control problem. This is used as a convergence test of the two algorithms on a control problem where we can find an analytical solution, and if one is not able to obtain the analytical solution, one can use a refined numerical calculation and use that as an approximate for the triple $(\bar{\theta},\bar{u},\bar{p})$. 
 
 Other possible methods to use on the optimal control problem include the sequential quadratic programming (SQP) method \cite{Algorithms}, and reduced SQP \cite{DPSteel}. 

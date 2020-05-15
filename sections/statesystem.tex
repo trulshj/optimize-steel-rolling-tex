@@ -123,9 +123,9 @@ Under the required conditions for a solution to \eqref{eq:heat} we can go on to 
 \begin{proof}
 We can reformulate the cost functional $J(\theta, u)$ in terms of norms as 
 \begin{equation*}
-    J(\theta, u) = \frac{1}{2}\|\theta (,T) - \theta_d \|_{L^2(\Omega)} + \frac{\gamma}{2}\|u\|_{L^2(0,T)}
+    J(\theta, u) = \frac{1}{2}\|\theta (,T) - \theta_d \|_{L^2(\Omega)}^2 + \frac{\gamma}{2}\|u\|_{L^2(0,T)}^2
 \end{equation*}
-Now a norm is convex by applying the triangle inequality and continuity of the norm follows by an application of the reverse triangle inequality. This thus implies that the cost functional is weakly lower semicontinous. 
+Now a norm is convex by applying the triangle inequality and continuity of the norm follows by an application of the reverse triangle inequality. This thus implies that the cost functional is weakly lower semicontinuous in both arguments.
 \end{proof}
 
 \begin{theorem}[Optimal Control]
@@ -135,10 +135,10 @@ If the assumptions in the existence corollary are all satisfied, then there exis
 \end{equation*}
 subject to
 \begin{align*}
-       \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) &= 0 \quad &\text{in } Q,  \\
-      -k \frac{\partial \theta}{\partial \nu} &= u(t) (\theta - \theta_w) \quad &\text{on } \Sigma_1, \\
-      -k \frac{\partial \theta}{\partial \nu} &= 0 \quad &\text{on } \Sigma_0, \\
-      \theta(x, 0) &= \theta_0 & \text{in $\Omega$.}
+       \rho c_p \theta_t - \nabla \cdot (k \nabla \theta) &= 0 &&\text{in } Q,  \\
+      -k \frac{\partial \theta}{\partial \nu} &= u(t) (\theta - \theta_w) &&\text{on } \Sigma_1, \\
+      -k \frac{\partial \theta}{\partial \nu} &= 0 \quad &&\text{on } \Sigma_2, \\
+      \theta(x, 0) &= \theta_0 && \text{in $\Omega$.}
 \end{align*}
 \end{theorem}
 
